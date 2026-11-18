@@ -9,11 +9,18 @@
   "credits": "CREDITS",
   "quit": "QUIT",
   "back": "BACK",
-  "build": "VL-001 / FOUNDATION BUILD",
+  "build": "VL-002 / MOVEMENT BUILD",
   "pending": "Campaign systems arrive in VL-002\u2013VL-007.\nThis build verifies the project foundation.",
   "future": "This screen is scheduled for VL-013.",
   "credits_body": "VOID LANTERN\nOriginal game in development.\nBuilt with Godot Engine (MIT).\nReference images are not shipped as game assets.",
   "quit_question": "EXIT VOID LANTERN?",
   "cancel": "CANCEL",
-  "hint": "ARROWS / D-PAD   SELECT     ENTER / A   CONFIRM     ESC / B   BACK"
+  "hint": "ARROWS / D-PAD   SELECT     ENTER / A   CONFIRM     ESC / B   BACK",
+  "movement_test": "LAUNCH MOVEMENT TEST",
+  "movement_build": "N-07 / FLIGHT SYSTEMS\nVL-002 \u2014 movement verification",
+  "resume": "RESUME",
+  "quit_to_menu": "QUIT TO MENU",
+  "confirm_quit": "CONFIRM QUIT",
+  "hud_top": "VOID LANTERN   SCORE %08d   STAGE %02d   x%02d   AEGIS %d",
+  "hud_bottom": "CHARGE [            ]   TYPE %s LV.%d   SPD %d   BOMB x%d"
 }

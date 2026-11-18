@@ -1,31 +1,42 @@
-; VOID LANTERN — Godot 4.5+ Compatibility.
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
+
 config/name="VOID LANTERN"
 run/main_scene="res://scenes/boot.tscn"
-config/features=PackedStringArray("4.5", "GL Compatibility")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [autoload]
+
+GameState="*res://autoload/game_state.gd"
 InputBindings="*res://autoload/input_bindings.gd"
 Locale="*res://autoload/locale.gd"
 
 [display]
+
 window/size/viewport_width=640
 window/size/viewport_height=360
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="viewport"
-window/stretch/aspect="keep"
 window/stretch/scale_mode="integer"
 
-[physics]
-common/physics_ticks_per_second=60
-
 [rendering]
+
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-textures/default_filters/use_nearest_mipmap_filter=false
-textures/canvas_textures/default_texture_filter=0
-2d/snap/snap_2d_transforms_to_pixel=true
 environment/defaults/default_clear_color=Color(0.031, 0.067, 0.118, 1)
+2d/snap/snap_2d_transforms_to_pixel=true

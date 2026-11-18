@@ -1,0 +1,8 @@
+Godot Engine v4.7.1.stable.fedora.a13da4feb - https://godotengine.org
+OpenGL API 4.6 (Core Profile) Mesa 26.2.6 - Compatibility - Using Device: AMD - AMD Radeon RX 6600 (radeonsi, navi23, ACO, DRM 3.64, 7.3.4-300.fc45.x86_64)
+
+RESIZE window=(640, 360) logical=(640.0, 360.0) scale=(1.0, 1.0) root_size=(640, 360) screen=[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]
+RESIZE window=(1280, 720) logical=(640.0, 360.0) scale=(2.0, 2.0) root_size=(1280, 720) screen=[X: (2.0, 0.0), Y: (0.0, 2.0), O: (0.0, 0.0)]
+RESIZE window=(1100, 800) logical=(640.0, 360.0) scale=(1.0, 1.0) root_size=(1100, 800) screen=[X: (1.0, 0.0), Y: (0.0, 1.0), O: (230.0, 220.0)]
+FULLSCREEN logical=(640.0, 360.0) scale=(4.0, 4.0)
+VISUAL failures=0

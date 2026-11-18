@@ -83,6 +83,20 @@ func run() -> void:
     check(menu.panel.get_child_count() == 6, "repeated transitions do not accumulate UI")
     menu.queue_free()
     await process_frame
+    await preload("res://tests/test_movement.gd").new().run(self, check)
+    change_scene_to_file("res://scenes/boot.tscn")
+    await scene_changed
+    current_scene.show_page("campaign")
+    current_scene.buttons[0].pressed.emit()
+    await scene_changed
+    check(current_scene.name == "Mission", "menu movement launch enters mission")
+    current_scene.pause()
+    current_scene._confirm_quit()
+    current_scene.pause_panel.get_child(1).pressed.emit()
+    await scene_changed
+    check(current_scene.name == "Boot" and not paused, "confirmed quit returns unpaused to title")
+    current_scene.queue_free()
+    await process_frame
     if "--self-test-failure" in OS.get_cmdline_user_args():
         check(false, "intentional runner failure")
     print("RESULT: %d assertions, %d failures" % [assertions, failures])

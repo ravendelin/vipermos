@@ -1,7 +1,7 @@
 extends Control
 ## Navigable foundation shell; no pretend campaign or unfinished combat scene.
 var page: String = ""
-var panel: VBoxContainer
+@onready var panel: VBoxContainer = $Panel
 var buttons: Array[Button] = []
 var last_menu_index: int = 0
 
@@ -22,11 +22,6 @@ func _ready() -> void:
         style.content_margin_bottom = 3
         theme_resource.set_stylebox(state, "Button", style)
     theme = theme_resource
-    panel = VBoxContainer.new()
-    panel.position = Vector2(140, 28)
-    panel.size = Vector2(360, 300)
-    panel.add_theme_constant_override("separation", 5)
-    add_child(panel)
     show_page("title")
     print("VOID_LANTERN_BOOT_OK viewport=640x360 physics=60 page=title")
 
@@ -69,6 +64,8 @@ func show_page(next: String) -> void:
     else:
         _label(page, 18)
         _label("credits_body" if page == "credits" else ("pending" if page == "campaign" else "future"))
+        if page == "campaign":
+            _button("movement_test", _start_movement)
         _button("back", show_page.bind("menu"))
     _label("hint", 9)
     for i: int in buttons.size():
@@ -89,3 +86,7 @@ func _input(event: InputEvent) -> void:
     elif event.is_action_pressed("ui_cancel"):
         show_page("quit" if page == "menu" else "menu")
         get_viewport().set_input_as_handled()
+
+func _start_movement() -> void:
+    GameState.start_run()
+    get_tree().change_scene_to_file("res://scenes/game/mission.tscn")

@@ -1,12 +1,12 @@
 # Implementation status
 
-Updated 2026-11-18. This delivery implements VL-001, as requested. Future milestones
+Updated 2026-11-18. This delivery implements VL-002 after VL-001. Future milestones
 remain sequential; no gameplay, art or audio milestone is declared complete.
 
 | Milestone | Deliverable | Actual status |
 |---|---|---|
 | VL-001 | init Godot, viewport, input, repo structure, headless test runner | Implemented; verification limits below |
-| VL-002 | player movement, fixed tick, camera/HUD/debug | Not started |
+| VL-002 | player movement, fixed tick, camera/HUD/debug | Implemented; automated checks pass; human input trial pending |
 | VL-003 | Pulse/Charge, swept collisions, projectile lifetime/pool | Not started |
 | VL-004 | AEGIS FSM, ARC/PRISM/EMBER, bit/missile/bomb, pickups | Not started |
 | VL-005 | terrain + DSL stage director + checkpoint/recovery | Not started |
@@ -35,9 +35,16 @@ See TEST_REPORT.md for commands and actual observations.
 Initial repository: no commits, only untracked user-supplied `docs/` specification
 and 15 JPEG references; no AGENTS.md found. Those source materials were preserved.
 `docs/GDD.md` points to the actual supplied filename. No push/publication performed.
-The implemented foundation is the source baseline for VL-002; create a baseline
-commit before subsequent milestone changes per GDD section 16.
+VL-001 baseline committed locally as `620be51` before VL-002 changes, as required
+by GDD section 16. No push/publication performed.
 
-Next: VL-002 player movement and input snapshot (D-pad priority, analog deadzone,
-diagonal normalization), fixed-tick mission ownership, HUD/debug and pause/focus.
-Do not implement that behavior inside the UI shell.
+## VL-002 verification boundary
+
+173 assertions pass (115 original foundation assertions plus 58 movement/integration
+assertions). Real graphical resize checks cover 1×, 2×, letterbox and fullscreen.
+Linux smoke bundle rebuilt and boots. Human playthrough and physical controller
+verification remain unverified. Development ship/backdrop are explicitly temporary;
+final original sprites, animations and audio remain VL-008 deliverables.
+No combat, terrain, stage spawning or camera scrolling is implied by this milestone.
+
+Next: VL-003 Pulse/Charge, swept collision resolution, projectile lifetime/pool.
