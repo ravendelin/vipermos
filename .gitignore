@@ -1,0 +1,6 @@
+.godot/
+dist/
+.venv/
+__pycache__/
+*.pyc
+*.tmp

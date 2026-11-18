@@ -1,0 +1,19 @@
+{
+  "title": "VOID LANTERN",
+  "tagline": "A SIGNAL IN THE DARK",
+  "prompt": "PRESS ANY BUTTON",
+  "campaign": "START CAMPAIGN",
+  "practice": "STAGE PRACTICE",
+  "scores": "HIGH SCORES",
+  "options": "OPTIONS",
+  "credits": "CREDITS",
+  "quit": "QUIT",
+  "back": "BACK",
+  "build": "VL-001 / FOUNDATION BUILD",
+  "pending": "Campaign systems arrive in VL-002\u2013VL-007.\nThis build verifies the project foundation.",
+  "future": "This screen is scheduled for VL-013.",
+  "credits_body": "VOID LANTERN\nOriginal game in development.\nBuilt with Godot Engine (MIT).\nReference images are not shipped as game assets.",
+  "quit_question": "EXIT VOID LANTERN?",
+  "cancel": "CANCEL",
+  "hint": "ARROWS / D-PAD   SELECT     ENTER / A   CONFIRM     ESC / B   BACK"
+}
