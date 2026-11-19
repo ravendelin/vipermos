@@ -1,13 +1,13 @@
 # Implementation status
 
-Updated 2026-11-18. This delivery implements VL-002 after VL-001. Future milestones
-remain sequential; no gameplay, art or audio milestone is declared complete.
+Updated 2026-11-18. This delivery implements VL-003 after VL-002. Future milestones
+remain sequential; complete campaign, final art and audio are not yet delivered.
 
 | Milestone | Deliverable | Actual status |
 |---|---|---|
 | VL-001 | init Godot, viewport, input, repo structure, headless test runner | Implemented; verification limits below |
 | VL-002 | player movement, fixed tick, camera/HUD/debug | Implemented; automated checks pass; human input trial pending |
-| VL-003 | Pulse/Charge, swept collisions, projectile lifetime/pool | Not started |
+| VL-003 | Pulse/Charge, swept collisions, projectile lifetime/pool | Implemented; 291 automated assertions pass; human range playtest pending |
 | VL-004 | AEGIS FSM, ARC/PRISM/EMBER, bit/missile/bomb, pickups | Not started |
 | VL-005 | terrain + DSL stage director + checkpoint/recovery | Not started |
 | VL-006 | E01–E11, E16, E12–E15 + pattern library | Not started |
@@ -47,4 +47,25 @@ verification remain unverified. Development ship/backdrop are explicitly tempora
 final original sprites, animations and audio remain VL-008 deliverables.
 No combat, terrain, stage spawning or camera scrolling is implied by this milestone.
 
-Next: VL-003 Pulse/Charge, swept collision resolution, projectile lifetime/pool.
+VL-002 and editor-visibility correction committed as baseline `bf97195` before
+VL-003 changes. User confirmed the editor launch works; this does not establish a
+full human gameplay playthrough.
+
+## VL-003 verification boundary
+
+Pulse 9-tick cadence; Charge 12/45/96 thresholds, 12-tick recovery, cap and cancel;
+relative capsule sweeps, circle/box targets, stable contact resolution, 64px spatial
+hash and pooled 192 friendly projectiles with eight reserved full-charge slots.
+Damage groups prevent duplicate hits and deaths. Range is an explicit development
+fixture, separate from the mission base scene, with resettable targets and barriers.
+291 assertions pass; real-render range test kills exactly five of six 56HP targets.
+HUD/capsule screenshots inspected. Ready is a testable signal; audible ready cue
+and final animated assets remain VL-008. Hostile bullet/shield priority is VL-004;
+actual terrain/player death/checkpoint logic is VL-005/007.
+
+Linux smoke title boot passes. Direct scene override in installed release runtime
+is forbidden by its build configuration; full packaged range interaction is not
+verified. Matching-template release export/Windows and human input trial remain
+outstanding. See TEST_REPORT.md for exact commands and recorded limits.
+
+Next: VL-004 AEGIS FSM, ARC/PRISM/EMBER, bits/missiles/bomb and pickups.

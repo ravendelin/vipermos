@@ -6,6 +6,8 @@ var speed_index: int = 1
 var velocity := Vector2.ZERO
 var show_hitbox: bool = false
 var visual_tick: int = 0
+var charge_visual_ticks: int = 0
+var muzzle_ticks: int = 0
 
 func step(snapshot: Dictionary) -> void:
     if snapshot.get("speed_cycle", false):
@@ -14,6 +16,7 @@ func step(snapshot: Dictionary) -> void:
     position += velocity / 60.0
     position = position.clamp(Vector2(18, 34), Vector2(622, 325))
     visual_tick += 1
+    muzzle_ticks = maxi(0, muzzle_ticks - 1)
     queue_redraw()
 
 func _draw() -> void:
@@ -27,6 +30,13 @@ func _draw() -> void:
     for y: int in [-3, 3]:
         draw_line(Vector2(-25,y), Vector2(-30 - (visual_tick / 5) % 4,y), Color("30bfd5"), 2)
     draw_set_transform(Vector2.ZERO)
+    if charge_visual_ticks >= 12:
+        var radius := lerpf(3.0, 12.0, charge_visual_ticks / 96.0)
+        draw_circle(Vector2(23,0), radius, Color("205f95"))
+        draw_arc(Vector2(23,0), radius, 0, TAU, 24, Color("9bf7f3"), 1)
+        draw_circle(Vector2(23,0), radius * 0.35, Color("f0ffff"))
+    if muzzle_ticks > 0:
+        draw_line(Vector2(24,0), Vector2(31,0), Color("f0ffff"), 3)
     if show_hitbox:
         draw_arc(Vector2.ZERO, HIT_RADIUS, 0, TAU, 24, Color("f3f3d9"))
         draw_colored_polygon(PackedVector2Array([Vector2(0,-2),Vector2(2,0),Vector2(0,2),Vector2(-2,0)]), Color.WHITE)

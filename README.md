@@ -3,7 +3,7 @@
 Original offline horizontal shoot ’em up for Linux/Windows, Godot 4.5+ and GDScript.
 Source specification: [GDD](docs/VOID_LANTERN_GDD_v1.0.md).
 
-Current delivery: **VL-002 movement foundation**. The title, menu and flight test run; campaign,
+Current delivery: **VL-003 weapons foundation**. The title, menu and weapon range run; campaign,
 combat, final pixel art and music are scheduled in the [milestone backlog](docs/IMPLEMENTATION_STATUS.md).
 This is not a finished game or the vertical slice.
 
@@ -12,9 +12,9 @@ This is not a finished game or the vertical slice.
 Import `project.godot`, then double-click `scenes/boot.tscn` in FileSystem.
 The title screen is stored in the scene and is visible in the 2D editor.
 Press **F5** to run the project. In the running window choose
-**START CAMPAIGN → LAUNCH MOVEMENT TEST** to control the ship.
-The editor canvas itself does not run gameplay. `mission.tscn` still draws its
-development ship/HUD at runtime; use F6 on that scene for a direct flight test.
+**START CAMPAIGN → LAUNCH WEAPON RANGE** to control the ship.
+The editor canvas itself does not run gameplay. `weapon_range.tscn` still draws its
+development ship/HUD/targets at runtime; use F6 on that scene for a direct range test.
 
 ## Run and test
 
@@ -28,7 +28,7 @@ godot --path .
 ```
 
 No Python packages, network, API keys or plugins are required. Python is only a development tool.
-Tests do not write player saves. Expected test summary: `173 assertions, 0 failures`.
+Tests do not write player saves. Expected test summary: `291 assertions, 0 failures`.
 To check that the runner really fails, run the same test command with
 `-- --self-test-failure`; expected exit code is 1 with one intentional failure.
 
@@ -36,14 +36,19 @@ Menu: arrows/WASD or D-pad/left stick to select; Enter/A to confirm; Esc/B to re
 Quit opens a confirmation with Cancel focused. Campaign/practice/options/score
 screens explicitly identify their pending milestone; they do not start fake gameplay.
 
-To fly: **START CAMPAIGN → LAUNCH MOVEMENT TEST**. After the two-second intro,
+To fly: **START CAMPAIGN → LAUNCH WEAPON RANGE**. After the two-second intro,
 move with WASD/arrows or controller, change speed with Shift/LB, pause with Esc/Start.
 F3 toggles diagnostics and the hitbox in debug builds. Loss of application focus or
 controller disconnection pauses; returning focus never resumes automatically.
-Weapons, enemies, terrain and final art/audio are implemented in later milestones.
-This explicit development flight test is not the finished campaign.
+Hold **Z/Space** (pad A) for Pulse. Hold **X** (pad X) and release for Charge:
+12–44 ticks weak, 45–95 medium, 96+ full. **R** resets range targets and projectiles.
+Six aligned targets have 56 HP each; full Charge penetrates five distinct targets.
+The upper target has front armor; the lower striped panel blocks projectiles.
+These are isolated collision fixtures, not campaign enemies or player-contact walls.
+Enemies, stage terrain and final art/audio are implemented in later milestones.
+This explicit development weapon range is not the finished campaign.
 
-Gameplay bindings (movement, speed and pause active; combat follows in VL-003/004):
+Gameplay bindings (Pulse/Charge active; AEGIS and additional weapons follow in VL-004):
 
 | Action | Keyboard | Xbox controller |
 |---|---|---|

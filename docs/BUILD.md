@@ -45,3 +45,15 @@ godot --path . --script tests/capture_shell.gd
 Writes `docs/qa/vl-001-menu.png` from the real graphical viewport, then exits.
 Tests and documentation are excluded from packaged resources. PNG shows logical
 640×360 pixels; physical 2×/fullscreen interaction verification is still pending.
+
+
+## VL-003 smoke update
+
+Rebuilt local Linux smoke bundle with Pulse/Charge and range resources. Boot marker
+verified; helper now rejects runtime `ERROR:` output even if Godot exits zero, and
+requires the boot marker. Both editor and runtime versions remain unchanged.
+Attempting `./dist/linux-smoke/VoidLantern.x86_64 res://scenes/game/weapon_range.tscn
+--headless --quit-after 180` is rejected because this runtime disables scene path
+overrides. Despite exit 0 it did **not** launch the range; the log is retained.
+Source range renders via `godot --path . --script tests/capture_weapons.gd`.
+Full packaged range interaction is not claimed verified.

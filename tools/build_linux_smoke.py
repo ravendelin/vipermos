@@ -14,7 +14,14 @@ if not runtime.is_file():
     parser.error(f'Runtime missing: {runtime}')
 out = root / 'dist/linux-smoke'
 out.mkdir(parents=True, exist_ok=True)
-subprocess.run(['godot', '--headless', '--path', str(root), '--export-pack', 'Linux', str(out / 'VoidLantern.pck')], check=True)
+def checked_run(command, *, cwd=None, marker=None):
+    result = subprocess.run(command, cwd=cwd, capture_output=True, text=True, timeout=120)
+    output = result.stdout + result.stderr
+    print(output, end='')
+    if result.returncode or 'ERROR:' in output or (marker and marker not in output):
+        raise SystemExit(f'Smoke command failed verification: {command[0]} (exit {result.returncode})')
+
+checked_run(['godot', '--headless', '--path', str(root), '--export-pack', 'Linux', str(out / 'VoidLantern.pck')])
 shutil.copy2(runtime, out / 'VoidLantern.x86_64')
-subprocess.run([str(out / 'VoidLantern.x86_64'), '--headless', '--quit-after', '3'], cwd=out, check=True)
+checked_run([str(out / 'VoidLantern.x86_64'), '--headless', '--quit-after', '3'], cwd=out, marker='VOID_LANTERN_BOOT_OK')
 print(f'Smoke bundle: {out}')

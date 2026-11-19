@@ -1,13 +1,20 @@
 extends Node2D
+const Weapons = preload("res://scripts/combat/weapon_controller.gd")
+var weapons := Weapons.new()
 const Snapshot = preload("res://scripts/game/input_snapshot.gd")
 var input_snapshot := Snapshot.new()
 var stage_tick: int = 0
 var intro_ticks: int = 120
 var phase: String = "INTRO"
-var charge_ticks: int = 0
+var charge_ticks: int:
+    get:
+        return weapons.charge_ticks
+    set(value):
+        weapons.charge_ticks = value
 var physics_us: int = 0
 var leaving: bool = false
 @onready var player: Node2D = $World/Player
+@onready var projectiles: Node2D = $World/Projectiles
 @onready var hud: CanvasLayer = $HUD
 @onready var overlay: CanvasLayer = $Overlay
 var pause_panel: VBoxContainer
@@ -35,8 +42,9 @@ func _ready() -> void:
         button.pressed.connect(entry[1])
         pause_panel.add_child(button)
     pause_panel.hide()
-    hud.refresh(stage_tick, physics_us)
+    hud.refresh(stage_tick, physics_us, charge_ticks, projectiles.active_count)
     queue_redraw()
+    print("VOID_LANTERN_MISSION_OK phase=INTRO")
 
 func _input(event: InputEvent) -> void:
     input_snapshot.ingest(event)
@@ -52,6 +60,7 @@ func _input(event: InputEvent) -> void:
     elif event is InputEventKey and event.physical_keycode == KEY_F3 and event.pressed and not event.echo and OS.is_debug_build():
         hud.diagnostics.visible = not hud.diagnostics.visible
         player.show_hitbox = hud.diagnostics.visible
+        projectiles.debug_paths = hud.diagnostics.visible
         player.queue_redraw()
 
 func _physics_process(_delta: float) -> void:
@@ -65,27 +74,33 @@ func fixed_tick() -> void:
     if phase == "INTRO":
         intro_ticks -= 1
         if intro_ticks <= 0:
-            phase = "SCROLL"
+            set_phase("SCROLL")
             intro_label.hide()
             input_snapshot.suppress_until_release()
-    elif phase == "SCROLL":
+    elif phase in ["SCROLL", "BOSS"]:
         player.step(snapshot)
         GameState.speed_index = player.speed_index
+        var shot: String = weapons.step(snapshot)
+        if not shot.is_empty():
+            projectiles.spawn(shot, player.position + Vector2(23,0))
+            player.muzzle_ticks = 3
+        player.charge_visual_ticks = weapons.charge_ticks
+        projectiles.step()
         stage_tick += 1
     physics_us = Time.get_ticks_usec() - started
-    hud.refresh(stage_tick, physics_us)
+    hud.refresh(stage_tick, physics_us, charge_ticks, projectiles.active_count)
 
 func pause() -> void:
     if leaving:
         return
-    charge_ticks = 0
+    cancel_charge()
     input_snapshot.suppress_until_release()
     get_tree().paused = true
     pause_panel.show()
     pause_panel.get_child(0).grab_focus()
 
 func resume() -> void:
-    charge_ticks = 0
+    cancel_charge()
     input_snapshot.suppress_until_release()
     _reset_pause_buttons()
     pause_panel.hide()
@@ -111,7 +126,7 @@ func return_to_menu() -> void:
     if leaving:
         return
     leaving = true
-    charge_ticks = 0
+    cancel_charge()
     get_tree().paused = false
     get_tree().change_scene_to_file("res://scenes/boot.tscn")
 
@@ -126,6 +141,9 @@ func _joy_changed(device: int, connected: bool) -> void:
         pause()
 
 func _exit_tree() -> void:
+    weapons.reset()
+    if is_instance_valid(projectiles):
+        projectiles.clear()
     get_tree().paused = false
 
 func _draw() -> void:
@@ -140,3 +158,18 @@ func _pause_primary() -> void:
         pause_panel.get_child(0).grab_focus()
     else:
         resume()
+
+func cancel_charge() -> void:
+    weapons.cancel(input_snapshot.held("charge"))
+    if is_instance_valid(player):
+        player.charge_visual_ticks = 0
+        player.queue_redraw()
+    if is_instance_valid(hud):
+        hud.refresh(stage_tick, physics_us, 0, projectiles.active_count)
+
+func set_phase(next: String) -> void:
+    cancel_charge()
+    input_snapshot.suppress_until_release()
+    phase = next
+    if next not in ["SCROLL", "BOSS"]:
+        projectiles.clear()

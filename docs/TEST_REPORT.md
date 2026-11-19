@@ -141,3 +141,90 @@ renders the serialized scene with its runtime script removed, exit 0. Inspected
 `qa/boot-static-preview.png`: title, build label and start button visible without
 running `_ready()`. This verifies serialized content, not manual editor interaction.
 Mission ship/HUD remain runtime drawing; direct mission preview uses F6.
+
+
+# Actual verification — VL-003
+
+Date: 2026-11-18. Baseline `bf97195`, same Godot 4.7.1 editor / 4.7.2 local smoke
+runtime as previous milestones. Scope: base ship weapons and friendly projectile
+collision pipeline; this is not enemy/campaign implementation.
+
+| Command | Observed result |
+|---|---|
+| `godot --headless --path . --editor --import --quit` | Exit 0, scripts/scenes import; no ERROR output |
+| `godot --headless --path . --script tests/run_all.gd` | Exit 0, **291 assertions, 0 failures** |
+| `godot --path . --script tests/capture_weapons.gd` | Exit 0, real OpenGL range; `kills=5 sixth_hp=56 bullets=0` |
+| `python3 tools/validate_content.py` | Exit 0; VL-003 files and locale valid; no campaign validator claim |
+| `python3 tools/build_linux_smoke.py --runtime "$HOME/.local/share/godot/export_templates/4.7.2.stable/linux_release.x86_64"` | Exit 0, PCK built, title boot marker verified, no runtime ERROR output |
+| `./dist/linux-smoke/VoidLantern.x86_64 res://scenes/game/weapon_range.tscn --headless --quit-after 180` | **Blocked** by runtime scene-path override restriction; ERROR printed despite exit 0; range did not launch |
+| `python3 -m py_compile tools/build_linux_smoke.py tools/validate_content.py` | Exit 0 |
+| `git diff --check` | Exit 0 |
+
+Raw evidence: `qa/vl-003-{import,tests,visual,linux-smoke,range-smoke}.log`.
+Inspected actual logical viewport captures `qa/vl-003-charge.png`,
+`qa/vl-003-projectile.png`, `qa/vl-003-penetration.png`. First capture shows a
+full gauge and nose halo; second a travelling full capsule; third exactly five
+aligned targets removed and sixth untouched. HUD text no longer overlaps gauge.
+
+## New test coverage
+
+118 additional assertions (173 → 291) cover:
+
+- T004: Pulse fires at ticks 0,9,…81 over 90 ticks, one update per physics tick.
+- T005: release at 0/11/12/44/45/95/96/160 ticks, sizes/speeds/damage/penetration,
+  cap at 96, ready signal once, Pulse suppressed throughout charge, immediate
+  charge start between ordinary Pulse shots, exact 12-tick recovery and new-press
+  requirement if charge was pressed during recovery.
+- T006: cancel does not emit a shot; pause clears actual weapon/HUD charge; release
+  after resume produces no ghost shot; new charge works; DEATH transition clears
+  pool and charge and does not accept firing. Full death/respawn gameplay is later.
+- T014/T015 relevant foundation: full charge hits five distinct groups, duplicate
+  colliders cannot multiply damage, overlaps cannot re-hit next tick, fast shot
+  crossing a 5.5r circle, relative motion against circles/boxes, velocity-oriented
+  capsule, rounded-corner near miss, analytic AABB TOI, hash versus exhaustive
+  contact candidates across 12 lanes. Shields/hostile shots remain VL-004.
+- Thin terrain/armor blocks full charge before target; terrain wins equal-time
+  contact; simultaneous lethal hits emit one kill and count damage once. No score
+  award is implemented for development targets.
+- New projectile overlaps can hit immediately but movement starts the next tick;
+  exact speed, pool 192 with eight reserved full-charge slots, lifetime boundary,
+  offscreen cleanup, 100 resets clearing all collision/HP/hit-group scope, paused
+  projectile position/lifetime unchanged.
+
+## Corrections found during work
+
+Initial integration rejected the first Charge press after entering SCROLL because
+weapon cancellation always assumed the button remained held. Cancellation now
+uses actual held input; pause-held input is still blocked until release. Ordinary
+Pulse cooldown is separate from Charge recovery, so starting charge interrupts
+held fire immediately. Subthreshold release emits no shot even if Pulse is held.
+First visual capture showed gauge overlapping TYPE text; moved weapon/status text
+to a separate label region and recaptured. Runtime scene override error returning
+exit 0 led to strengthening smoke validation (ERROR text and boot marker).
+
+## Implementation decisions and limits
+
+Friendly capsule collision dimensions match weapon entries (Pulse uses a 9×3
+capsule within its stated envelope). Collision math uses relative movement and a
+rounded Minkowski hull for AABBs rather than a rectangular size inflation. The
+64px spatial hash is rebuilt from swept target bounds; contact order is TOI,
+category (terrain before armor before damage), stable shape ID, projectile ID.
+HP belongs to a damage group, not individual shape. Pool slots are preallocated
+and reused. Collision candidate/contact arrays still allocate; no performance
+benchmark is claimed. Four-second lifetime (240 ticks) and 64px offscreen margin
+are cleanup policies; GDD did not prescribe numeric lifetime. No balance values
+were changed. Signals expose damage/death/charge-ready for later VFX/audio.
+
+New source: `scripts/combat/{weapon_controller,collision_world,damage_resolver,
+projectile_system}.gd`, `scripts/game/weapon_range.gd`,
+`scenes/game/weapon_range.tscn`, `tests/{test_combat,capture_weapons}.gd` and UIDs.
+Updated mission/player/HUD/menu/boot scenes and scripts, locale, runner, validators,
+smoke helper, README and milestone documentation.
+
+**Manual playthrough not verified.** The user confirmed prior editor launch works;
+that does not establish human weapon balance/feel testing or a full Arcade pass.
+No physical-controller weapon trial, audio review, full campaign, Windows export,
+matched-template Linux export or full packaged range interaction is claimed.
+Range shapes are explicit development fixtures permitted before VL-008, not final
+art or enemy archetypes. Sound, final sprites/animations, Toggle Charge settings UI,
+AEGIS, hostile projectiles, moving terrain and campaign remain their later milestones.
