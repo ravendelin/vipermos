@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "id": "S05",
+  "name": "Gravity Well",
+  "scroll_speed": 100,
+  "duration_ticks": 7200,
+  "checkpoints_ticks": [
+    0,
+    2400,
+    4800,
+    7200
+  ],
+  "terrain": [
+    [
+      0.0,
+      24.0,
+      336.0
+    ],
+    [
+      18.0,
+      24.0,
+      336.0
+    ],
+    [
+      25.0,
+      40.0,
+      310.0
+    ],
+    [
+      37.0,
+      55.0,
+      290.0
+    ],
+    [
+      45.0,
+      24.0,
+      336.0
+    ],
+    [
+      58.0,
+      24.0,
+      336.0
+    ],
+    [
+      67.0,
+      55.0,
+      300.0
+    ],
+    [
+      76.0,
+      24.0,
+      336.0
+    ],
+    [
+      88.0,
+      24.0,
+      336.0
+    ],
+    [
+      95.0,
+      46.0,
+      315.0
+    ],
+    [
+      105.0,
+      24.0,
+      336.0
+    ],
+    [
+      120.0,
+      24.0,
+      336.0
+    ]
+  ],
+  "hazards": [
+    {
+      "id": "S05:hazard:000",
+      "kind": "oscRect",
+      "at_tick": 1020,
+      "width": 32.0,
+      "y": 120.0,
+      "height": 50.0,
+      "amplitude": 32.0,
+      "period": 4.0,
+      "phase": 0.0
+    },
+    {
+      "id": "S05:hazard:001",
+      "kind": "oscRect",
+      "at_tick": 1560,
+      "width": 44.0,
+      "y": 205.0,
+      "height": 60.0,
+      "amplitude": 24.0,
+      "period": 3.6,
+      "phase": 0.0
+    },
+    {
+      "id": "S05:hazard:002",
+      "kind": "worldRect",
+      "at_tick": 2100,
+      "width": 32.0,
+      "y": 120.0,
+      "height": 62.0
+    },
+    {
+      "id": "S05:hazard:003",
+      "kind": "oscRect",
+      "at_tick": 3240,
+      "width": 42.0,
+      "y": 215.0,
+      "height": 46.0,
+      "amplitude": 42.0,
+      "period": 4.0,
+      "phase": 0.0
+    },
+    {
+      "id": "S05:hazard:004",
+      "kind": "oscRect",
+      "at_tick": 4020,
+      "width": 38.0,
+      "y": 160.0,
+      "height": 52.0,
+      "amplitude": 34.0,
+      "period": 3.8,
+      "phase": 0.0
+    },
+    {
+      "id": "S05:hazard:005",
+      "kind": "worldRect",
+      "at_tick": 5340,
+      "width": 48.0,
+      "y": 242.0,
+      "height": 54.0
+    },
+    {
+      "id": "S05:hazard:006",
+      "kind": "oscRect",
+      "at_tick": 5880,
+      "width": 32.0,
+      "y": 130.0,
+      "height": 50.0,
+      "amplitude": 26.0,
+      "period": 3.5,
+      "phase": 0.0
+    }
+  ],
+  "events": [
+    {
+      "id": "S05:000",
+      "at_tick": 180,
+      "enemy": "E16",
+      "entry": "R",
+      "y": [
+        72,
+        150,
+        245
+      ],
+      "count": 3,
+      "gap_ticks": 30,
+      "variant": "DOWN"
+    },
+    {
+      "id": "S05:001",
+      "at_tick": 540,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 160.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "ember"
+    },
+    {
+      "id": "S05:002",
+      "at_tick": 840,
+      "enemy": "E07",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S05:003",
+      "at_tick": 1260,
+      "enemy": "E08",
+      "entry": "R",
+      "y": [
+        120,
+        220
+      ],
+      "count": 2,
+      "gap_ticks": 84
+    },
+    {
+      "id": "S05:004",
+      "at_tick": 1800,
+      "enemy": "E11",
+      "entry": "L",
+      "y": 140.0,
+      "count": 2,
+      "gap_ticks": 60
+    },
+    {
+      "id": "S05:005",
+      "at_tick": 2520,
+      "enemy": "E14",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S05:006",
+      "at_tick": 2940,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "ember"
+    },
+    {
+      "id": "S05:007",
+      "at_tick": 3360,
+      "enemy": "E16",
+      "entry": "R",
+      "y": [
+        140,
+        220
+      ],
+      "count": 2,
+      "gap_ticks": 45,
+      "variant": "UP"
+    },
+    {
+      "id": "S05:008",
+      "at_tick": 3780,
+      "enemy": "E08",
+      "entry": "R",
+      "y": 200.0,
+      "count": 3,
+      "gap_ticks": 60
+    },
+    {
+      "id": "S05:009",
+      "at_tick": 4380,
+      "enemy": "E07",
+      "entry": "L",
+      "y": 175.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S05:010",
+      "at_tick": 4860,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "life"
+    },
+    {
+      "id": "S05:011",
+      "at_tick": 5100,
+      "enemy": "E15",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S05:012",
+      "at_tick": 5760,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        100,
+        245
+      ],
+      "count": 2,
+      "gap_ticks": 60
+    },
+    {
+      "id": "S05:013",
+      "at_tick": 6300,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 160.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "missile"
+    },
+    {
+      "id": "S05:014",
+      "at_tick": 6660,
+      "enemy": "E04",
+      "entry": "R",
+      "y": [
+        115,
+        240
+      ],
+      "count": 2,
+      "gap_ticks": 51
+    }
+  ],
+  "beams": [],
+  "boss": "B05"
+}

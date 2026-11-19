@@ -1,0 +1,631 @@
+VOID LANTERN — ОТЧЁТ ДЛЯ АРХИТЕКТОРА
+Дата составления: 2026-11-19
+Рабочий каталог: /home/pavel/Documents/TEST_SITES_TEMP/vipermos
+Основание: фактические исходники, состояние Git, документация реализации,
+сохранённые QA-артефакты и повторная проверка текущей рабочей копии.
+
+1. РЕЗЮМЕ И ГРАНИЦЫ ГОТОВНОСТИ
+
+Реализованы последовательные этапы VL-001–VL-005: фундамент Godot-проекта,
+управление кораблём, вооружение и непрерывные столкновения, модуль AEGIS и
+поддержка, геометрия уровней, диспетчер событий и восстановление с checkpoint.
+Это работающая промежуточная версия систем игры, но НЕ завершённая игра,
+НЕ готовый релиз и НЕ законченная кампания из восьми стадий.
+
+В текущей сборке можно запускать меню, испытательные сцены вооружения/AEGIS
+и просмотр стадий с геометрией, опасностями, смертью и восстановлением.
+Данные всех восьми стадий перенесены из GDD. Вражеские архетипы и боссы ещё
+не реализованы: события появления врагов и передачи управления боссу являются
+контрактами интеграции. Наличие JSON стадии не означает её игровую готовность.
+
+Оригинальная финальная пиксельная графика, анимации, звуковые эффекты и музыка
+ещё не созданы. Текущая программная отрисовка — временная визуализация этапов
+разработки. Она не удовлетворяет требованиям к финальным ассетам. Полный
+визуально-звуковой срез S01 предусмотрен VL-008, кампания — последующими этапами.
+
+Повторный запуск автоматического набора при подготовке отчёта:
+  RESULT: 593 assertions, 0 failures
+Проверка контента:
+  STAGE_VALIDATION files=8 failures=0
+  VL-005 content: 0 errors.
+Это количество утверждений (assertions), а не 593 независимых игровых сценария.
+Валидатор явно сообщает, что проверка финальной графики/аудио ещё ожидается.
+
+2. ИСТОЧНИКИ ТРЕБОВАНИЙ И СОСТОЯНИЕ ПОСТАВКИ
+
+Основной документ: docs/VOID_LANTERN_GDD_v1.0.md.
+docs/GDD.md указывает на фактическое имя основного документа.
+Референсы пользователя: docs/images (15 JPEG). Сохранены как материалы дизайна,
+не используются как готовые игровые ассеты и исключены из runtime-импорта docs/.gdignore.
+
+История локальных baseline-коммитов:
+  620be51 Establish VL-001 project foundation baseline
+  bf97195 Complete VL-002 movement foundation and visible editor title
+  5cd5fd9 Complete VL-003 ship weapons and swept projectile pipeline
+  696f8c8 Add Aegis controller, support system, and pickup system with tests
+Текущий HEAD: 696f8c8.
+
+СУЩЕСТВЕННО ДЛЯ ПЕРЕДАЧИ: VL-005 находится в рабочем дереве и пока не включён
+в коммит. Есть как изменённые tracked-файлы, так и новые untracked-файлы:
+JSON стадий, реализации StageDirector/terrain/recovery, тесты, сцена preview,
+QA-логи и снимки. Один checkout HEAD не воспроизводит описанную здесь версию.
+Перед передачей необходимо сохранить весь рабочий набор, включая новые файлы.
+Этот отчёт не выполняет commit, push, публикацию или развёртывание проекта.
+
+3. СОСТОЯНИЕ ЭТАПОВ
+
+Этап    Фактическая поставка                                  Проверки на этапе
+VL-001  Проект, viewport, input, меню, test runner             115 assertions
+VL-002  Движение, fixed tick, HUD/debug, видимая сцена редактора 173 assertions
+VL-003  Pulse/Charge, swept collision, пул снарядов            291 assertions
+VL-004  AEGIS, ARC/PRISM/EMBER, bits/missiles/bomb, pickups     416 assertions
+VL-005  Terrain, DSL/director, beams, checkpoints/recovery    593 assertions
+VL-006  Враги E01–E16 и библиотека атак                        Не начат
+VL-007  B01, полноценная S01, tutorial/continue/results       Не начат
+VL-008  Финальные базовые art/audio и полировка S01            Не начат
+VL-009  S02/S03, B02/B03, уникальные art/music                 Не начат
+VL-010  S04/S05, B04/B05, art/music                           Не начат
+VL-011  S06/S07, B06/B07, art/music                           Не начат
+VL-012  S08/B08, ending/credits, полный soundtrack            Не начат
+VL-013  Save/profile, меню, practice, highscore, accessibility Не начат
+VL-014  Баланс, полный проход, accessibility/performance      Не начат
+VL-015  Воспроизводимый релиз Linux/Windows, manifests         Не начат
+
+Числа в строках VL-001–005 отражают последовательные накопительные наборы,
+складывать их для получения общего количества нельзя. «Реализован» означает
+завершение текущего системного объёма с описанными ниже границами верификации,
+а не полную приёмку всей игры.
+
+4. ТЕХНИЧЕСКАЯ ОСНОВА
+
+Движок: Godot, GDScript, Compatibility renderer / OpenGL.
+Проверенная локальная версия: 4.7.1.stable.fedora.a13da4feb.
+Логическое разрешение: 640×360; начальное окно: 1280×720.
+Масштабирование: integer viewport, letterbox; фильтрация nearest.
+Позиции симуляции дробные; привязка к пикселям относится к отображению.
+Физический шаг: 60 Hz, что подтверждается boot-маркером и тестами.
+Основная сцена: res://scenes/boot.tscn.
+
+Текущий project.godot содержит config/features «4.7», «GL Compatibility».
+В GDD минимальная версия — 4.5; совместимость именно с 4.5 не проверена.
+Часть параметров использует значения Godot по умолчанию: в текущем файле нет
+явно заданных physics_ticks_per_second и stretch/aspect. Архитектору следует
+зафиксировать поддерживаемую версию и проверить явное закрепление важных
+параметров перед релизом. Для отчёта конфигурация не изменялась.
+
+Autoload:
+  GameState     — состояние текущего забега и счёта;
+  InputBindings — централизованные действия ввода;
+  Locale        — каталог локализуемых строк.
+Данные локали: data/locales/en.json. Полная локализация и полные настройки
+интерфейса пока не являются завершённой поставкой.
+
+Слои системы:
+  UI/menu → InputSnapshot → MissionController (fixed tick)
+  MissionController → Player/Weapon/AEGIS/Support/Pickups/Defense
+  Combat → CollisionWorld + DamageResolver + ProjectileSystem
+  StageController extends MissionController
+  StageController → StageData + StageDirector + Terrain + Beams + Recovery
+  StageDirector → enemy_requested(event) → будущие акторы VL-006
+  StageController → boss_requested(id) → будущие боссы VL-007 и далее
+
+Общая миссия переиспользуется в испытательных сценах и stage preview.
+Данные событий, геометрия и текущие экземпляры акторов разделены. ECS, сеть
+и платные плагины не вводились. Python-инструменты текущего набора используют
+стандартную библиотеку. Runtime не читает GDD и не требует сетевого доступа.
+
+5. VL-001: ФУНДАМЕНТ И ПЕРВЫЙ ЗАПУСК
+
+Созданы структура репозитория, Godot-проект, основная сцена, оболочка меню,
+централизованный ввод, локаль, headless test runner, валидатор контента,
+экспортные presets Linux/Windows и документация сборки/лицензирования.
+Меню поддерживает переходы, фокус клавиатуры/контроллера и безопасную отмену
+подтверждения. Часть конечных разделов пока остаётся оболочкой под VL-013.
+
+Первоначально boot.tscn имела преимущественно runtime-создание интерфейса;
+пользователь увидел пустую сцену в редакторе. Исправление: фон, заголовок,
+панель, подписи и кнопка сериализованы в сцене, runtime использует существующую
+панель. tests/capture_static_title.gd проверяет отображение без runtime-скрипта.
+Пользователь подтвердил, что запуск работает.
+
+6. VL-002: ВВОД, КОРАБЛЬ, ПАУЗА, HUD
+
+InputSnapshot хранит состояния устройств отдельно. Реализованы клавиатура,
+D-pad и аналоговый stick с deadzone 0.22; аналоговая величина сохраняется.
+D-pad имеет приоритет; противоположные направления компенсируются, диагонали
+нормализуются. Короткие нажатия сохраняются до потребления очередным tick.
+Переходы подавляют удерживаемые edge-действия и charge; потеря фокуса и
+отключение устройства очищают необходимые состояния.
+
+PlayerController:
+  скорости 105 / 145 / 190 px/s, начальная 145;
+  начальная позиция (96, 180), радиус столкновения 5.5;
+  границы центра x=18..622, y=34..325;
+  немедленный отклик, дробная симуляция;
+  временные изображения корпуса, наклона и двигателя.
+
+MissionController объединяет фиксированный tick, intro 120 ticks, pause,
+обработку фокуса/hotplug, отмену charge и подтверждение выхода.
+HUD: панели по 24 px сверху/снизу, score/lives/weapon/rank/speed/bomb/charge.
+F3 включает диагностическую информацию.
+
+Проверялись реальное ожидание 2 секунд во время pause, дополнительные 120
+ручных ticks, resize 640→1×, 1280→2×, 1100×800→1× с offset (230,220).
+На тестовой машине fullscreen дал 4×. Физический gamepad не проверялся:
+автоматические события и уведомления не заменяют аппаратный тест.
+
+7. VL-003: ОРУЖИЕ И СТОЛКНОВЕНИЯ
+
+Pulse: 2 damage, 420 px/s, размер 9×3, период 9 ticks, первый выстрел сразу.
+Charge:
+  0..11 ticks: выстрела нет;
+  12..44: weak, damage 8, скорость 365, размер 16×8, до 2 групп целей;
+  45..95: medium, damage 24, скорость 340, размер 28×16, до 3 групп;
+  96+: full, damage 56, скорость 310, размер 46×24, до 5 групп.
+Полный заряд ограничен; ready-сигнал возникает один раз. Charge подавляет
+Pulse. После выпуска действует recovery 12 ticks; требуется новое нажатие.
+Кулдаун Pulse и блокировка Charge учитываются раздельно.
+
+CollisionWorld:
+  относительные swept capsule-проверки против circle/AABB/convex polygon;
+  аналитическое время контакта, учёт движения цели;
+  округлённая Minkowski-граница без ложных попаданий в углы AABB;
+  broadphase spatial hash с ячейкой 64 px;
+  стабильные ID и детерминированная сортировка контактов;
+  нормали контактов для отражений PRISM.
+
+DamageResolver: HP принадлежит damage group, несколько коллайдеров могут
+ссылаться на одну группу. Повторное попадание в одну группу и повторная смерть
+не начисляются. Есть vulnerable/boss_id и сигналы damage/destroy.
+
+ProjectileSystem: предварительно выделенный пул 192 friendly-снарядов,
+8 мест зарезервированы под full charge. Снаряд возраста 0 проверяет исходное
+перекрытие, движение начинается следующим tick. Базовый TTL 240 ticks,
+удаление за пределами экрана с запасом 64 px. Контакты упорядочиваются по
+TOI, категории, shape ID, projectile ID; penetration считается по группам.
+
+weapon_range — отдельная development-сцена: шесть целей по 56 HP,
+бронированная цель, стена, R для сброса. Это не вражеские архетипы;
+уничтожение этих тестовых целей не выдаёт игровой score.
+Реальный render-тест full charge уничтожил ровно пять из шести целей;
+у шестой осталось 56 HP, активных снарядов после завершения не осталось.
+
+8. VL-004: AEGIS, ПОДДЕРЖКА, HOSTILE SHOTS, PICKUPS
+
+AEGIS — единая конечная машина состояний:
+  ATTACHED_FRONT / ATTACHED_REAR;
+  SWAP: 12 ticks, без shield/fire;
+  LAUNCH: 330 px/s, 21 tick;
+  FREE: 165 px/s к позиции player + side×160, с ограничением границ;
+  RETURN: 420 px/s, ограничение 24 ticks;
+  FALLBACK: скрытие на 9 ticks и выбор безопасного порта;
+  STOWED: повторная попытка раз в 6 ticks.
+Порты ±35 px, радиусы shield=13/contact=10, x-границы 13..627.
+Debounce 12 ticks. При teleport fallback предыдущая позиция сбрасывается,
+чтобы не создавать ложную swept-траекторию через весь экран.
+Контакт: 5 damage на группу раз в 12 ticks; кеш мёртвых групп очищается.
+
+Оружие модуля по рангам:
+  ARC: 1/2/3 bolts, damage 3, speed 340, sine amplitude 12, period 0.48 s;
+       cooldown 17/17/15 ticks, собственные offsets/phases.
+  PRISM: 2/3/5 bolts веером, damage 3, speed 390, cooldown 29/27/27;
+       ровно два отражения, третий контакт останавливает;
+       normal offset 0.5 px, остаток пути расходуется в том же tick;
+       максимум три контакта за tick.
+  EMBER: 2/2/3 seekers, damage 2/4/4, speed 260, cooldown 39/35/33;
+       поворот до 160 deg/s, сектор порта 80°, ближайшая допустимая цель;
+       reacquire раз в 9 ticks при недействительной цели, стабильные tie IDs.
+  Detached: damage 3, speed 360, период 18 ticks независимо от типа.
+
+DefenseSystem: пул 512 hostile shots. Обычные: radius 3, TTL 420;
+heavy: radius 7, TTL 480, не блокируются щитом. Учитывается относительный
+sweep против terrain, shield/bit и ship; порядок определяется контактом,
+с разрешением равенства по категориям. Если корабль встретился раньше щита,
+попадание в корабль не отменяется задним числом. Hazards обходят shield,
+solid-столкновения обходят неуязвимость. Assist имеет собственную защиту.
+
+Bits: позиции y±25, radius 8, убираются внутри solid; bolt damage 1,
+speed 360, период 17 ticks. Missiles: ranks 1/2, offsets +12 / ±12,
+damage 5, speed 245, turn 120 deg/s, ближайшая цель впереди до 260 px,
+период 54 ticks, TTL 138.
+
+Bomb: кольцо 6 ticks; однократная очистка находящихся на экране ordinary/heavy
+shots, но не beams/hazards. Damage 25 на обычную группу, 30 суммарно на босса,
+распределённые по стабильным группам; закрытые части исключены.
+Защита 90 ticks от момента активации, cooldown 120. Новые пули, появившиеся
+после одноразовой очистки, не уничтожаются автоматически.
+
+Pickups: смена типа сохраняет ранг, повтор типа повышает его до 3;
+bits/missiles/bombs ограничены 2, lives — 6. При cap выдаются бонусы.
+Движение vx=-38, синус amplitude 9/period 1.1 s; swept collection radius 16,
+скольжение вдоль стены. Life имеет event ID для защиты от повторного сбора.
+В VL-005 исправлена отсутствовавшая базовая награда +100 score за pickup
+с сохранением дополнительного cap-бонуса по GDD.
+
+AEGIS range: клавиши 1–7 выдают pickups, T включает фиксированные
+телеграфируемые эмиттеры, H — heavy orb, R — сброс. Это тестовая лаборатория.
+Выполнены render-проверки ARC/PRISM/EMBER rank 3 и detached-состояния,
+а также два одинаковых 300-tick replay с частыми переключениями FSM.
+
+9. VL-005: ДАННЫЕ СТАДИЙ И ДИСПЕТЧЕР
+
+tools/import_stage_specs.py переносит таблицы раздела 10 GDD в runtime JSON.
+Это offline-инструмент; секунды переводятся в ticks через Decimal half-up×60.
+Runtime читает data/stages/s01.json ... s08.json без зависимости от Markdown.
+
+Стадия  Название            Scroll px/s  Развёрнутых событий  Hazards  Beams
+S01     Silent Dock              76              43             3       0
+S02     Fungal Orbit             68              39             3       0
+S03     Iron Procession          82              32             3       0
+S04     Glass Vault              72              21             6       0
+S05     Gravity Well            100              24             7       0
+S06     Nerve Cathedral          66              29             3       0
+S07     Black Relay              86              20             3       4
+S08     The Last Signal          78              25             4       2
+Итого                                           233            32       6
+
+StageData проверяет обязательные/неизвестные поля, конечность чисел, границы
+ticks, counts/entries/IDs, варианты pickups, концы профиля 0..120 s,
+минимальную высоту прохода 100, hazards/beams. Формат boss ID проверяется,
+но соответствующие ресурсы и полный registry врагов/боссов пока отсутствуют.
+
+StageDirector разворачивает строки в стабильные event ID «source row:subindex»,
+сортирует по time/row/index. При восстановлении бинарный поиск ставит cursor
+на checkpoint; события из прошлого не догоняются. DSL поддерживает scalar,
+list, corridor, mount Y, отступы с учётом hit extent. Точки появления:
+R=672, L=-32, T/B по world mount; прямые pickups x=600.
+Обычные события dispatch выполняются только до tick 7199 включительно.
+
+10. VL-005: ГЕОМЕТРИЯ, ЛУЧИ, СОСТОЯНИЯ СТАДИИ
+
+TerrainProfile: world_x=640+scroll_speed×time; screen_x=world_x-scroll.
+Скролл применяется один раз. Профиль линейно интерполируется и ограничивается
+краями; шаг геометрии 8 world px. Ceiling/floor формируются convex quads,
+одни и те же формы используются для отрисовки и collision.
+
+Реализованы worldRect, oscRect, gate с вычислением по абсолютному tick.
+Gate состоит из двух плит высотой 312, перемещающихся с общим gap:
+это перенос геометрии, пригодный для relative sweep. Перед входом опасности
+показывается маркер за 48 ticks. TerrainView рисует границы и полосы опасности;
+сохраняет последнюю геометрию для визуального freeze смерти, даже если
+collision очищен. Отдельный Backdrop z=-100 устранил перекрытие terrain
+родительским фоном; terrain имеет z=-20, beams — z=35.
+
+StageBeams: предупреждение 72 ticks, активность 33 ticks на S07 и 30 на S08,
+ширина 16; луч обрезается текущими solid shapes. Для мгновенного beam clip
+используются текущие положения стен, а не их предыдущая swept-траектория.
+Пропускаются предупреждения, начавшиеся до checkpoint; transition очищает лучи.
+Это stage beams, будущие вражеские beam producers ещё не реализованы.
+
+StageController наследует MissionController и вызывает общий
+simulate_active(snapshot, allow_movement). Жизненный цикл:
+  INTRO → SCROLL → WARNING (180 ticks) → BOSS;
+  при смерти DEATH → RESPAWN или GAME_OVER;
+  pause останавливает дерево симуляции.
+Checkpoint фиксируется до событий/столкновений своего tick.
+Tick 7200 — переход, а не дополнительный tick обычного dispatch.
+В BOSS stage clock остаётся 7200; передаётся boss_requested(id).
+Автоматической фиктивной победы и готового босса нет.
+
+stage_preview имеет явный development_preview=true. Меню запускает preview,
+отдельно доступна AEGIS-лаборатория. В preview: 1–4 — позиции 0/40/80/120 s,
+N — следующая геометрия, R — новый забег на выбранной стадии.
+Эти переходы — инструменты инспекции, не прохождение кампании.
+При свежем запуске сбрасываются speed/type, Assist сохраняется через boss warning.
+
+11. CHECKPOINT, СМЕРТЬ И SCORE
+
+CheckpointRecovery сохраняет score на ticks 0/2400/4800/7200.
+Обработка смерти защищена от повторного списания lives: lives-- и deaths++
+выполняются один раз. Death длится 39 ticks. При наличии жизней восстанавливается
+checkpoint, rank снижается минимум до 1, bits и missile rank уменьшаются на 1;
+bombs, lives и выбранная speed сохраняются. Score откатывается к checkpoint.
+Появление занимает 18 ticks: движение заблокировано, стрельба разрешена.
+Неуязвимость: Assist 180 / Arcade 120 / Veteran 90 ticks.
+При отсутствии жизней — GAME_OVER; полная Continue-система ещё не поставлена.
+
+Безопасная точка ищется с radius 20: сначала x=96 в центре коридора,
+затем детерминированный ближайший поиск x=48..160 шагом 4, y=40..320.
+Проверены все 32 checkpoint-позиции восьми стадий. Это не доказательство
+проходимости каждой траектории всего уровня в боевых условиях.
+
+GameState содержит deaths, score_milestones и claimed_lives.
+Дополнительные жизни за 50 000 и 120 000 начисляются однократно, cap=6.
+Флаги начисленных/собранных жизней переживают откат checkpoint, чтобы
+исключить повторное получение бонуса через смерть. Пока это состояние памяти
+текущего забега: профиль на диске и атомарное сохранение не реализованы.
+
+12. АВТОМАТИЧЕСКАЯ И ВИЗУАЛЬНАЯ ВЕРИФИКАЦИЯ
+
+Основной набор: tests/run_all.gd, без внешнего тестового framework.
+Покрытие включает foundation/input/menu, движение/pause, оружие/свипы,
+AEGIS/support/pickups/defense, данные/геометрию/события/recovery стадий.
+Негативные фикстуры проверяют ненулевой exit при нарушении контракта.
+
+Во время подготовки этого отчёта повторно получены:
+  593 assertions, 0 failures;
+  STAGE_VALIDATION files=8 failures=0;
+  content: 0 errors;
+  два 1800-tick replay с совпадающим итоговым хешем:
+  0c5e4b66c3903cbfcc63882051c5bea384f80bc841b316c315cc84c45bc6d692
+Свежий вывод runner находится в /tmp/void-lantern-report-tests.log
+(временный файл, не переносимый QA-артефакт репозитория).
+
+Replay покрывает реализованные состояния player/AEGIS/weapons, sorted projectile
+records, damage groups, run state, checkpoint/director/terrain/beams/support/pickups.
+Это ускоренная симуляция 1800 ticks (=30 игровых секунд), не замер FPS.
+Совпадение доказывает повторяемость данного сценария на текущей сборке;
+межплатформенная детерминированность и будущие акторы этим не проверены.
+
+Сохранённые результаты VL-005 (предыдущая рабочая сессия, 2026-11-18):
+  docs/qa/vl-005-import.log
+  docs/qa/vl-005-tests.log
+  docs/qa/vl-005-validation.log
+  docs/qa/vl-005-invalid-data.log — намеренно некорректный JSON, ожидаемый exit 1
+  docs/qa/vl-005-linux-smoke.log
+  docs/qa/vl-005-visual.log
+  docs/qa/vl-005-s01.png — контейнер/геометрия S01
+  docs/qa/vl-005-s04.png — движущиеся ворота S04
+  docs/qa/vl-005-s07.png — stage beam S07
+Снимки были получены реальным render и просмотрены в ходе реализации.
+При составлении отчёта новая визуальная съёмка и ручной игровой проход
+не выполнялись; исторические результаты не выдаются за новую проверку.
+
+Команды для воспроизведения из корня:
+  godot --headless --path . --editor --import --quit
+  python3 tools/validate_content.py
+  godot --headless --path . --script tests/run_all.gd
+  godot --headless --path . --script tests/run_all.gd -- --self-test-failure
+  godot --headless --path . --script tests/validate_stages.gd -- --file res://tests/fixtures/invalid_stage.json
+  godot --path .
+  godot --path . --script tests/capture_stages.gd
+Две команды с self-test-failure и invalid_stage должны завершаться exit 1;
+их ненулевой статус является ожидаемым результатом, а не поломкой проекта.
+
+Подробная история проверок/ограничений: docs/TEST_REPORT.md.
+Пользовательские сообщения «работает» подтверждают запуск предоставленной
+промежуточной версии, но не означают приёмку всей кампании или gamepad-тест.
+
+13. СБОРКА И РЕЛИЗНЫЕ ОГРАНИЧЕНИЯ
+
+Подготовлены export_presets.cfg для Linux и Windows, в обоих включены
+JSON стадий data/stages/*.json. Документация: docs/BUILD.md.
+Стандартный Linux export с совпадающим template пока заблокирован:
+локальный editor — 4.7.1, доступные export templates — 4.7.2.stable.
+
+Для smoke создан tools/build_linux_smoke.py: экспорт PCK текущим editor,
+копирование явно заданного установленного runtime и проверка загрузки.
+Использовавшийся runtime:
+  $HOME/.local/share/godot/export_templates/4.7.2.stable/linux_release.x86_64
+Команда:
+  python3 tools/build_linux_smoke.py --runtime "$HOME/.local/share/godot/export_templates/4.7.2.stable/linux_release.x86_64"
+Результат размещается в dist/linux-smoke (не включён в Git).
+Это межпатчевая smoke-проверка, а не сертифицированный release export.
+
+Исторически проверены headless/title boot, графический title и перенос
+bundle в отдельный каталог с пробелами без исходников и кеша проекта.
+Полное взаимодействие со stage/range внутри packaged runtime не проверено.
+Этот runtime запрещает --path/scene override своей compile-конфигурацией;
+он способен печатать ERROR и вернуть exit 0. Поэтому smoke-helper проверяет
+также ERROR-маркеры и обязательный boot-маркер, а не только код завершения.
+Windows build/run не выполнены. Подпись, установщик, финальный release manifest
+и воспроизводимость на чистых поддерживаемых системах ещё не подтверждены.
+
+Историческая графическая среда QA: Linux x86_64, AMD RX6600,
+Mesa 26.2.6, OpenGL Compatibility. Полный стресс-тест и целевые бюджеты FPS,
+CPU/GPU, памяти и аудиозадержки не измерены; утверждать их выполнение нельзя.
+
+14. ВИЗУАЛЬНАЯ ЧАСТЬ, ЗВУК И ЛИЦЕНЗИИ
+
+Сейчас есть функциональная программная визуализация: корабль, banking/thruster,
+снаряды, модули, щиты, pickups, геометрия, предупреждения и HUD.
+Это средства тестирования читаемости механик до финального art pass.
+Нет готового финального sprite/animation набора, уникальных оформлений всех
+стадий, законченных enemy/boss sprites, explosion pipeline, музыкальных треков
+и полного SFX-набора. Ready-сигнал Charge пока не является аудиосигналом.
+
+Пайплайны оригинальных ассетов и базовые cues/tracks T01/B01/M00/M01 относятся
+к VL-008; следующие этапы должны расширять их уникальным контентом стадий.
+В релизе временные изображения недопустимы. Текущий валидатор не подтверждает
+полноту будущих графических/аудиоманифестов.
+
+Пользовательские референсы сохранены отдельно. Сторонние asset packs не
+подключались. Учтены лицензия Godot и terms встроенного fallback-шрифта;
+материалы находятся в assets/licenses и docs/ASSET_LICENSES.md.
+Реестр необходимо расширять при добавлении каждого финального ресурса.
+
+15. ВЫЯВЛЕННЫЕ ПРОБЛЕМЫ И ВНЕСЁННЫЕ ИСПРАВЛЕНИЯ
+
+1) Пустая сцена редактора: основные title-узлы перенесены в boot.tscn;
+   добавлена отдельная проверка статического отображения.
+2) Terrain скрывался фоном родителя: выделен Backdrop с правильным z-order;
+   повторно проверены снимки S01/S04/S07.
+3) Не начислялись базовые +100 за pickup: исправлено в VL-005 по GDD,
+   сохранены правила cap-бонусов, обновлены проверки.
+4) Fallback AEGIS мог бы создавать фиктивную траекторию при teleport:
+   предыдущая позиция явно сбрасывается.
+5) Beam clip должен учитывать текущую стену: отделён мгновенный запрос
+   от relative-motion swept collision.
+6) Ошибки packaged runtime могли не отражаться в exit code:
+   smoke-helper проверяет сообщения ошибок и boot-маркер.
+
+Изменения баланса и трактовки фиксируются в docs/BALANCE_CHANGES.md.
+Авторские значения таблиц не подвергались эмпирической перебалансировке.
+Уточнения реализации (защита bomb от нажатия, суммарные 30 damage на босса,
+начальные sine offsets) следует рассматривать вместе с тестами и GDD.
+
+16. РИСКИ И ВОПРОСЫ АРХИТЕКТУРНОГО КОНТРОЛЯ
+
+A. Интеграция боевых акторов — главный следующий риск.
+   Пока enemy_requested не создаёт реальные архетипы. При VL-006 нужны
+   стабильные entity IDs, HP groups, lifecycle/cleanup, drop ownership,
+   паттерны атак и подключение к существующим collision/damage контрактам.
+   Затем необходимо проверить реальный совместный бой, а не только фикстуры.
+
+B. Порядок одновременных событий.
+   Сейчас подсистемы работают последовательно (контакт/поддержка/bomb,
+   defense, friendly shots). Полное соответствие приоритетам GDD 14.4 при
+   одновременной смерти игрока/врага/части босса ещё не доказано.
+   Рекомендация: ревью очереди контактов и единого момента применения
+   последствий до объявления полной боевой корректности.
+
+C. Производительность.
+   Friendly broadphase использует grid 64 px; defense выполняет собственные
+   проходы по solid/shield. Геометрия обновляется часто, используются массивы
+   и Dictionary. При заполненных пулах и реальных волнах нужен профиль;
+   существующие тесты не являются доказательством отсутствия GC/CPU пиков.
+   Оптимизировать по измерениям, не вводить заранее тяжёлую ECS.
+
+D. Проходимость геометрии.
+   32 безопасных checkpoint проверены; полный reachability всех моментов,
+   динамических ворот и вариантов под боевым давлением не доказан.
+   Требуются совместные геометрические и ручные gameplay-проверки.
+
+E. Toolchain.
+   Не совпадают версии editor/templates, минимум GDD 4.5 не сертифицирован.
+   До релиза зафиксировать версию и одинаковые templates, выполнить Linux
+   и Windows export/run на чистых системах, проверить явные project settings.
+
+F. Сохранения и интерфейс.
+   GameState пока только в памяти. Нет полноценного SaveService, atomic write,
+   восстановления повреждённого профиля, полного practice/highscore/remap UI.
+   Меню и preview не следует представлять как завершённый пользовательский flow.
+
+G. Полнота контента.
+   Все восемь JSON — authored data foundation. Нет полного enemy/boss registry,
+   финальных ассетов/аудио и campaign progression. Автовалидацию ссылок следует
+   расширить при появлении реальных ресурсов, включая отсутствие placeholders.
+
+H. Ручная приёмка.
+   Реальный контроллер/hotplug, полный Arcade-проход, accessibility и баланс
+   не подтверждены. Отдельно нужны проверки готовых пакетов, не только исходников.
+
+I. Передача рабочей копии.
+   Незакоммиченные VL-005-файлы легко потерять при передаче только HEAD.
+   До следующего этапа рекомендуется оформить проверенный baseline-коммит
+   с данными, UID, тестами и QA. В рамках запроса на отчёт это не выполнялось.
+
+17. РЕКОМЕНДУЕМЫЙ СЛЕДУЮЩИЙ ПОРЯДОК
+
+1. Сохранить/зафиксировать текущий VL-005 baseline и принять архитектурные
+   контракты director → actors, collision → damage и recovery → lifecycle.
+2. VL-006: реализовать E01–E16 и библиотеку паттернов; проверить spawn/attack/
+   death/drop, стабильные ID, очистку при checkpoint и независимость от FPS.
+3. VL-007: B01, полная S01, tutorial, continue/results; пройти от меню до победы
+   без preview-клавиш и debug-обходов.
+4. VL-008: оригинальные финальные core assets/audio, полировка S01,
+   contact sheet, 1×/2× screenshots, звуковые controls; показать вертикальный
+   срез владельцу продукта согласно контрольной точке GDD.
+5. VL-009–012: последовательно собрать оставшиеся стадии и боссов,
+   уникальную графику/музыку, ending/credits.
+6. VL-013: persistent profile и полные пользовательские меню/настройки.
+7. VL-014: полный автоматический и ручной проход, баланс, accessibility,
+   нагрузочные измерения и устранение критических дефектов.
+8. VL-015: согласованный toolchain, Linux/Windows exports, smoke реальных
+   сборок, лицензии/manifest и воспроизводимые инструкции.
+После каждого этапа сохранять реальные результаты и границы проверки,
+не подменять недостающие проверки предположениями об успешности.
+
+18. НАВИГАЦИЯ ПО КЛЮЧЕВЫМ ФАЙЛАМ
+
+Требования/статус:
+  docs/VOID_LANTERN_GDD_v1.0.md, docs/GDD.md, docs/images/
+  docs/IMPLEMENTATION_STATUS.md, docs/TEST_REPORT.md
+  docs/BUILD.md, docs/BALANCE_CHANGES.md, docs/ASSET_LICENSES.md
+  README.md
+Проект/сцены:
+  project.godot, export_presets.cfg
+  scenes/boot.tscn, scenes/game/mission.tscn
+  scenes/game/stage_preview.tscn
+Состояние и ввод:
+  autoload/game_state.gd, autoload/input_bindings.gd, autoload/locale.gd
+  scripts/game/input_snapshot.gd, scripts/game/mission_controller.gd
+Игрок и бой:
+  scripts/entities/player_controller.gd, scripts/entities/pickup_system.gd
+  scripts/combat/collision_world.gd, scripts/combat/damage_resolver.gd
+  scripts/combat/projectile_system.gd
+Стадии:
+  data/stages/s01.json ... s08.json, scripts/data/stage_data.gd
+  scripts/game/stage_controller.gd, scripts/game/stage_director.gd
+  scripts/game/terrain_profile.gd, scripts/game/terrain_view.gd
+  scripts/game/stage_beams.gd, scripts/game/checkpoint_recovery.gd
+UI:
+  scripts/ui/menu_shell.gd, scripts/ui/mission_hud.gd, scripts/ui/backdrop.gd
+Проверки/инструменты:
+  tests/run_all.gd, tests/test_aegis.gd, tests/test_stages.gd
+  tests/validate_stages.gd, tests/fixtures/invalid_stage.json
+  tests/capture_static_title.gd, tests/capture_stages.gd
+  tools/validate_content.py, tools/import_stage_specs.py
+  tools/build_linux_smoke.py, docs/qa/
+
+Конец содержательной части. Ниже — снимок Git на момент подготовки отчёта.
+
+19. ПРИЛОЖЕНИЕ: GIT STATUS --SHORT
+
+ M README.md
+ M autoload/game_state.gd
+ M data/locales/en.json
+ M docs/ASSET_LICENSES.md
+ M docs/BALANCE_CHANGES.md
+ M docs/BUILD.md
+ M docs/IMPLEMENTATION_STATUS.md
+ M docs/TEST_REPORT.md
+ M export_presets.cfg
+ M scenes/boot.tscn
+ M scenes/game/mission.tscn
+ M scripts/combat/collision_world.gd
+ M scripts/combat/projectile_system.gd
+ M scripts/entities/pickup_system.gd
+ M scripts/game/mission_controller.gd
+ M scripts/ui/menu_shell.gd
+ M tests/run_all.gd
+ M tests/test_aegis.gd
+ M tools/validate_content.py
+?? data/stages/s01.json
+?? data/stages/s02.json
+?? data/stages/s03.json
+?? data/stages/s04.json
+?? data/stages/s05.json
+?? data/stages/s06.json
+?? data/stages/s07.json
+?? data/stages/s08.json
+?? docs/qa/vl-005-import.log
+?? docs/qa/vl-005-invalid-data.log
+?? docs/qa/vl-005-linux-smoke.log
+?? docs/qa/vl-005-s01.png
+?? docs/qa/vl-005-s04.png
+?? docs/qa/vl-005-s07.png
+?? docs/qa/vl-005-tests.log
+?? docs/qa/vl-005-validation.log
+?? docs/qa/vl-005-visual.log
+?? report.log
+?? scenes/game/stage_preview.tscn
+?? scripts/data/stage_data.gd
+?? scripts/data/stage_data.gd.uid
+?? scripts/game/checkpoint_recovery.gd
+?? scripts/game/checkpoint_recovery.gd.uid
+?? scripts/game/stage_beams.gd
+?? scripts/game/stage_beams.gd.uid
+?? scripts/game/stage_controller.gd
+?? scripts/game/stage_controller.gd.uid
+?? scripts/game/stage_director.gd
+?? scripts/game/stage_director.gd.uid
+?? scripts/game/terrain_profile.gd
+?? scripts/game/terrain_profile.gd.uid
+?? scripts/game/terrain_view.gd
+?? scripts/game/terrain_view.gd.uid
+?? scripts/ui/backdrop.gd
+?? scripts/ui/backdrop.gd.uid
+?? tests/capture_stages.gd
+?? tests/capture_stages.gd.uid
+?? tests/fixtures/invalid_stage.json
+?? tests/test_stages.gd
+?? tests/test_stages.gd.uid
+?? tests/validate_stages.gd
+?? tests/validate_stages.gd.uid
+?? tools/import_stage_specs.py
+
+GIT HEAD (полный идентификатор):
+696f8c816a70d2e97fc1431508e697aa6de0d1d6
+
+Сам report.log создан по запросу пользователя; исходники игры при подготовке отчёта не редактировались.

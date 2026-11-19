@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "id": "S02",
+  "name": "Fungal Orbit",
+  "scroll_speed": 68,
+  "duration_ticks": 7200,
+  "checkpoints_ticks": [
+    0,
+    2400,
+    4800,
+    7200
+  ],
+  "terrain": [
+    [
+      0.0,
+      24.0,
+      336.0
+    ],
+    [
+      9.0,
+      36.0,
+      322.0
+    ],
+    [
+      18.0,
+      90.0,
+      296.0
+    ],
+    [
+      28.0,
+      118.0,
+      280.0
+    ],
+    [
+      37.0,
+      56.0,
+      306.0
+    ],
+    [
+      44.0,
+      50.0,
+      314.0
+    ],
+    [
+      54.0,
+      95.0,
+      270.0
+    ],
+    [
+      64.0,
+      68.0,
+      244.0
+    ],
+    [
+      71.0,
+      24.0,
+      336.0
+    ],
+    [
+      80.0,
+      40.0,
+      322.0
+    ],
+    [
+      90.0,
+      111.0,
+      312.0
+    ],
+    [
+      101.0,
+      76.0,
+      264.0
+    ],
+    [
+      108.0,
+      24.0,
+      336.0
+    ],
+    [
+      120.0,
+      24.0,
+      336.0
+    ]
+  ],
+  "hazards": [
+    {
+      "id": "S02:hazard:000",
+      "kind": "oscRect",
+      "at_tick": 1320,
+      "width": 22.0,
+      "y": 210.0,
+      "height": 54.0,
+      "amplitude": 18.0,
+      "period": 3.4,
+      "phase": 0.0
+    },
+    {
+      "id": "S02:hazard:001",
+      "kind": "worldRect",
+      "at_tick": 3480,
+      "width": 26.0,
+      "y": 155.0,
+      "height": 48.0
+    },
+    {
+      "id": "S02:hazard:002",
+      "kind": "oscRect",
+      "at_tick": 5640,
+      "width": 24.0,
+      "y": 213.0,
+      "height": 48.0,
+      "amplitude": 20.0,
+      "period": 4.0,
+      "phase": 0.0
+    }
+  ],
+  "events": [
+    {
+      "id": "S02:000",
+      "at_tick": 180,
+      "enemy": "E09",
+      "entry": "R",
+      "y": [
+        110,
+        190,
+        250
+      ],
+      "count": 3,
+      "gap_ticks": 42
+    },
+    {
+      "id": "S02:001",
+      "at_tick": 600,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "ember"
+    },
+    {
+      "id": "S02:002",
+      "at_tick": 960,
+      "enemy": "E08",
+      "entry": "R",
+      "y": [
+        160,
+        235
+      ],
+      "count": 2,
+      "gap_ticks": 69
+    },
+    {
+      "id": "S02:003",
+      "at_tick": 1260,
+      "enemy": "E10",
+      "entry": "T",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 168
+    },
+    {
+      "id": "S02:004",
+      "at_tick": 1680,
+      "enemy": "E09",
+      "entry": "R",
+      "y": {
+        "corr": 0.5
+      },
+      "count": 4,
+      "gap_ticks": 36
+    },
+    {
+      "id": "S02:005",
+      "at_tick": 2040,
+      "enemy": "E03",
+      "entry": "B",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 108
+    },
+    {
+      "id": "S02:006",
+      "at_tick": 2520,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 175.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "life"
+    },
+    {
+      "id": "S02:007",
+      "at_tick": 2700,
+      "enemy": "E04",
+      "entry": "R",
+      "y": {
+        "corr": 0.5
+      },
+      "count": 3,
+      "gap_ticks": 66
+    },
+    {
+      "id": "S02:008",
+      "at_tick": 3000,
+      "enemy": "E10",
+      "entry": "B",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 144
+    },
+    {
+      "id": "S02:009",
+      "at_tick": 3300,
+      "enemy": "E01",
+      "entry": "R",
+      "y": {
+        "corr": 0.74
+      },
+      "count": 4,
+      "gap_ticks": 28
+    },
+    {
+      "id": "S02:010",
+      "at_tick": 3720,
+      "enemy": "E08",
+      "entry": "R",
+      "y": {
+        "corr": 0.38
+      },
+      "count": 3,
+      "gap_ticks": 60
+    },
+    {
+      "id": "S02:011",
+      "at_tick": 4140,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 175.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "ember"
+    },
+    {
+      "id": "S02:012",
+      "at_tick": 4380,
+      "enemy": "E14",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S02:013",
+      "at_tick": 4920,
+      "enemy": "E09",
+      "entry": "R",
+      "y": {
+        "corr": 0.5
+      },
+      "count": 3,
+      "gap_ticks": 43
+    },
+    {
+      "id": "S02:014",
+      "at_tick": 5280,
+      "enemy": "E10",
+      "entry": "T",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 138
+    },
+    {
+      "id": "S02:015",
+      "at_tick": 5700,
+      "enemy": "E08",
+      "entry": "R",
+      "y": {
+        "corr": 0.7
+      },
+      "count": 2,
+      "gap_ticks": 60
+    },
+    {
+      "id": "S02:016",
+      "at_tick": 6060,
+      "enemy": "E05",
+      "entry": "R",
+      "y": {
+        "corr": 0.52
+      },
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "missile"
+    },
+    {
+      "id": "S02:017",
+      "at_tick": 6660,
+      "enemy": "E04",
+      "entry": "R",
+      "y": [
+        115,
+        240
+      ],
+      "count": 2,
+      "gap_ticks": 54
+    }
+  ],
+  "beams": [],
+  "boss": "B02"
+}

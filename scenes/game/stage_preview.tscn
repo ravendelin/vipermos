@@ -1,0 +1,13 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="PackedScene" path="res://scenes/game/mission.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/game/stage_controller.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/game/terrain_view.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/game/stage_beams.gd" id="4"]
+[node name="Mission" instance=ExtResource("1")]
+script = ExtResource("2")
+[node name="Terrain" type="Node2D" parent="World" index="0"]
+z_index = -20
+script = ExtResource("3")
+[node name="StageBeams" type="Node2D" parent="World" index="1"]
+z_index = 35
+script = ExtResource("4")

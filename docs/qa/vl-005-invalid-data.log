@@ -1,0 +1,5 @@
+Godot Engine v4.7.1.stable.fedora.a13da4feb - https://godotengine.org
+
+STAGE_VALIDATION files=1 failures=1
+res://tests/fixtures/invalid_stage.json: stage: unknown key unexpected; missing id; missing name; missing scroll_speed; missing duration_ticks; missing checkpoints_ticks; missing terrain; missing hazards; missing events; missing beams; missing boss
+EXIT_CODE=1

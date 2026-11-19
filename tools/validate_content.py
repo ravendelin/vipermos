@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 import sys
+import subprocess
 
 root = Path(__file__).resolve().parents[1]
 errors = []
@@ -28,7 +29,15 @@ for path in ['project.godot', 'scenes/boot.tscn', 'autoload/input_bindings.gd',
              'scripts/combat/support_system.gd', 'scenes/game/aegis_range.tscn']:
     if not (root / path).is_file():
         errors.append(f'Missing {path}')
+try:
+    result = subprocess.run(['godot', '--headless', '--path', str(root), '--script', 'tests/validate_stages.gd'], capture_output=True, text=True, timeout=60)
+    output = result.stdout + result.stderr
+    print(output, end='')
+    if result.returncode or 'ERROR:' in output or 'STAGE_VALIDATION files=8 failures=0' not in output:
+        errors.append('Stage validation failed (see Godot output above)')
+except (OSError, subprocess.TimeoutExpired) as exc:
+    errors.append(str(exc))
 for error in errors:
     print(f'FAIL: {error}', file=sys.stderr)
-print(f'VL-004 content: {len(errors)} errors. Stage/art/audio validation begins in later milestones.')
+print(f'VL-005 content: {len(errors)} errors. All eight stage schemas/checkpoints validated; final art/audio validation is pending.')
 sys.exit(bool(errors))

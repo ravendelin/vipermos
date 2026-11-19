@@ -1,6 +1,6 @@
 # Implementation status
 
-Updated 2026-11-18. This delivery implements VL-004 after VL-003. Future milestones
+Updated 2026-11-18. This delivery implements VL-005 after VL-004. Future milestones
 remain sequential; complete campaign, final art and audio are not yet delivered.
 
 | Milestone | Deliverable | Actual status |
@@ -9,7 +9,7 @@ remain sequential; complete campaign, final art and audio are not yet delivered.
 | VL-002 | player movement, fixed tick, camera/HUD/debug | Implemented; automated checks pass; human input trial pending |
 | VL-003 | Pulse/Charge, swept collisions, projectile lifetime/pool | Implemented; 291 automated assertions pass; human range playtest pending |
 | VL-004 | AEGIS FSM, ARC/PRISM/EMBER, bit/missile/bomb, pickups | Implemented; 416 automated assertions pass; human module trial pending |
-| VL-005 | terrain + DSL stage director + checkpoint/recovery | Not started |
+| VL-005 | terrain + DSL stage director + checkpoint/recovery | Implemented; 593 assertions pass; human terrain playthrough pending |
 | VL-006 | E01–E11, E16, E12–E15 + pattern library | Not started |
 | VL-007 | B01 + S01 complete data, tutorial, death/continue/results | Not started |
 | VL-008 | original art pipeline/core set, S01 polish, audio pipeline/core cues and T01/B01/M00/M01 | Not started |
@@ -86,4 +86,24 @@ physical controller, final pixel assets/audio and full release acceptance remain
 unverified. Actual stage terrain/checkpoints, enemy/beam producers and boss behavior
 remain later milestones; test fixtures cover their current collision contracts.
 
-Next: VL-005 terrain, data-driven stage director and checkpoint/recovery.
+Existing VL-004 baseline `696f8c8` was clean at the start of VL-005.
+
+## VL-005 verification boundary
+
+All eight full section-10 profiles, wave tables (233 expanded events), solid hazards
+and six stage beams transcribed to JSON. Schema and all 32 checkpoint safe points
+validated. Runtime director emits stable event IDs without historical catch-up;
+actors intentionally bind in VL-006. Terrain renderer and collision share 8px
+sampled polygons; world/oscillating rectangles, gates, telegraphs and clipped stage
+beams are implemented. Stage lifecycle now includes guarded life loss, 39-tick death,
+checkpoint reconstruction, 18-tick appearance, difficulty i-frames, score rollback,
+persistent extra-life/collected-life flags, 180-tick boss warning and boss handoff.
+
+593 assertions pass, including two matching 1800-tick replay hashes. Real-render
+S01/S04/S07 captures inspected after fixing a background layer that hid terrain.
+Linux title smoke passes; matching templates/Windows blockers remain. Preview is
+explicitly labeled: no enemy/boss actors, final terrain art or full campaign claim.
+Human terrain playthrough and full geometric reachability under combat pressure
+remain unverified. Manual debug checkpoint jumps do not count as stage completion.
+
+Next: VL-006 enemy archetypes E01–E16 and attack-pattern library.

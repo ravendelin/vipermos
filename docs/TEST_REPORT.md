@@ -328,3 +328,113 @@ stress benchmark or Windows run is claimed. Source renders and local Linux title
 smoke pass. Matching-template release and packaged range interaction limitations
 from earlier reports remain. Stage collision geometry, full death/checkpoint rules,
 enemy beam/arm sources and final assets/audio remain VL-005 onward.
+
+# Actual verification — VL-005
+
+Date: 2026-11-18. Clean starting baseline: `696f8c8` (already committed when work
+resumed). Same editor 4.7.1 / local runtime 4.7.2 and Linux host as previous stages.
+Scope: terrain, authored stage timeline, checkpoint/recovery and stage beam hazards.
+
+| Command | Actual result |
+|---|---|
+| `python3 tools/import_stage_specs.py` | Transcribed all eight profiles/tables, **233 expanded spawn events**, 32 authored solid hazards and six stage beams |
+| `godot --headless --path . --editor --import --quit` | Exit 0; no script/import ERROR in final log |
+| `godot --headless --path . --script tests/run_all.gd` | Exit 0; **593 assertions, 0 failures** |
+| `python3 tools/validate_content.py` | Exit 0; `STAGE_VALIDATION files=8 failures=0`, including 32 safe checkpoints |
+| `godot --headless --path . --script tests/validate_stages.gd -- --file res://tests/fixtures/invalid_stage.json` | Expected exit 1; malformed data rejected, not silently replaced |
+| `godot --path . --script tests/capture_stages.gd` | Exit 0; actual S01/S04/S07 OpenGL viewport captures, no drawing errors |
+| `python3 tools/build_linux_smoke.py --runtime "$HOME/.local/share/godot/export_templates/4.7.2.stable/linux_release.x86_64"` | Exit 0; stage JSON included, updated local PCK and verified title boot |
+| `python3 -m py_compile tools/import_stage_specs.py tools/validate_content.py` | Exit 0 |
+| `git diff --check` | Exit 0 |
+
+Evidence: `qa/vl-005-{import,tests,visual,invalid-data,linux-smoke}.log` and
+`qa/vl-005-{s01,s04,s07}.png`. Final images were inspected: terrain edges, container,
+vertically moving gate gap and stage beam are visible. Stage inspection counters
+were moved into the HUD so they do not cover collision boundaries. These are
+functional development visuals, not final stage art.
+
+## Added assertions (177 beyond VL-004)
+
+- All eight stage schemas and exact expanded GDD counts (43/39/32/21/24/29/20/25).
+  Stable IDs, ordered equal-time rows, cyclic Y lists, corridor fractions, mount
+  fallback at open edges, pickup x600, allowed left entries, single dispatch per
+  tick, binary checkpoint seek without historical catch-up. Every timeline is
+  drained through tick7200 with all expected events exactly once.
+- All 8×4 checkpoints have a deterministic safe point at radius20. Profile clamp,
+  right-edge world coordinate conversion, interpolation, shared polygon geometry,
+  swept circle against slopes, world scroll applied once, absolute oscillation,
+  fixed gate gap, pre-entry hazard warning and clean boss arena.
+- Corrupt data cases: illegal left entry, event crossing end, unknown gameplay
+  keys, missing courier drop, nonfinite geometry, invalid identity and absent
+  profile endpoint. Independent validator CLI's negative fixture exits nonzero.
+- Death before/at40s, checkpoints80/120, one life decrement, 39 death ticks,
+  18 appearance ticks, movement lock and stage-clock freeze during recovery,
+  difficulty-specific i-frames, safe reconstruction, zero-lives GAME_OVER.
+  Score rolls back while bomb count, lives and speed do not; rank/bits/missiles
+  lose one tier. 50k/120k extra lives cannot be farmed by checkpoint rollback.
+- Tick7200 is transition-only, scroll solids clear, boss warning lasts180 ticks
+  excluding pause, preserved Assist protection, boss handoff does not advance
+  scroll time. Boss actor itself remains a future milestone.
+- Stage beam warning is inactive, active/expiry ticks exact, clip to nearest
+  current solid across beam width, previous-frame solid movement cannot move
+  the instantaneous clipping point, warning begun before a checkpoint is skipped.
+- Two accelerated 1800-tick runs with the same input produce the same aggregate
+  SHA-256: `0c5e4b66c3903cbfcc63882051c5bea384f80bc841b316c315cc84c45bc6d692`.
+  Each tick hashes implemented gameplay state: player/module, weapons, sorted
+  projectile records, damage groups, defense/support, pickups, run flags, checkpoint,
+  director cursor, terrain samples and beams. Rendering/time measurements are
+  excluded. This is same-build determinism, not cross-platform determinism or an
+  enemy/boss replay test before those actors exist.
+
+## Defects found and corrected
+
+- Early headless preload could not resolve an autoload name in pickup code.
+  Lifetime flags are now queried via the scene tree for spawning and the passed
+  run state for collection. Final full suite compiles/runs without those errors.
+- JSON arrays contain floating numbers; direct deep comparison to an integer
+  checkpoint array rejected valid files. Validate checkpoint values individually.
+- Old parent-level backdrop covered negative-Z terrain. Moved it to an explicit
+  `z=-100` child; recaptured and visually inspected the visible collision outlines.
+- Death cleanup erased collision geometry before it could be drawn as a frozen
+  scene. Terrain view now retains its last visual geometry independently until
+  reconstruction; a test checks retention while transient collision records clear.
+- Instantaneous beam clipping initially reused moving-target sweep history. It now
+  freezes each solid at its current pose for the ray/width query.
+- Boss warning cleared remaining Assist protection via generic defense reset.
+  Preserve the protection flag across this nonlethal transition; regression added.
+- Added the previously omitted normative +100 per collected pickup and persistent
+  score/life flags. This is a specification correction, documented in
+  BALANCE_CHANGES.md; no authored geometry/wave/weapon values were rebalanced.
+
+## Implementation and acceptance limits
+
+Committed JSON is runtime input; optional source transcription is offline Python
+standard library. Solid geometry is sampled at 8 world pixels and used by both
+rendering and convex capsule sweeps. Gates use two fixed-height slabs translated
+by the same oscillating gap center, so collision motion does not depend on changing
+box dimensions. Broad-phase bounds avoid unnecessary solid sweeps. Geometry and
+beams reconstruct from absolute stage ticks; event history never replays before
+checkpoint. Pickups consult the actual corridor midpoint when sliding out of solids.
+
+New source: `scripts/data/stage_data.gd`, `scripts/game/{stage_director,
+terrain_profile,terrain_view,checkpoint_recovery,stage_beams,stage_controller}.gd`,
+`scripts/ui/backdrop.gd`, `scenes/game/stage_preview.tscn`, `data/stages/s01..s08.json`,
+`tools/import_stage_specs.py`, `tests/{test_stages,validate_stages,capture_stages}.gd`,
+negative JSON fixture and UID files. Extended existing mission/combat geometry,
+state/pickup scoring, menu, export filters, validators and documentation.
+
+Enemy events currently emit `enemy_requested`; there are **no fake enemy actors**
+or random replacement waves. Boss boundary emits `boss_requested` and visibly
+identifies the pending boss actor. Full enemy behavior is VL-006; S01 boss/death/
+continue/results integration is VL-007. The development preview permits checkpoint
+inspection and next-geometry selection; these do not count as campaign completion.
+At zero lives it stops at GAME_OVER; continue UI is not claimed delivered here.
+Death/appearance durations are functional; final explosion/audio/animations remain
+VL-008. Cached terrain visuals freeze while transient combat pools are cleared.
+
+**Manual playthrough not verified.** Automated schema/safe-point/replay tests are
+not full geometric reachability under all moving obstacles or bullet-pressure
+fairness. No human complete Arcade pass, enemy/boss stage acceptance, physical
+controller/Windows trial or representative performance benchmark is claimed.
+Local Linux title smoke is verified; matched-template release and full packaged
+stage interaction limitations remain. No publication or network dependence added.

@@ -2,9 +2,10 @@ extends Node2D
 const IDS := ["arc","prism","ember","bit","missile","bomb","life"]
 var items: Array[Dictionary] = []
 var claimed_lives: Dictionary = {}
+var corridor_center: Callable
 
 func spawn(id: String, at: Vector2, event_id: String, carrier: bool = false) -> bool:
-    if id not in IDS or items.size() >= 24 or (carrier and not Rect2(0,24,640,312).has_point(at)) or (id == "life" and claimed_lives.has(event_id)):
+    if id not in IDS or items.size() >= 24 or (carrier and not Rect2(0,24,640,312).has_point(at)) or (id == "life" and _life_claimed(event_id)):
         return false
     for item: Dictionary in items:
         if item.event_id == event_id:
@@ -21,24 +22,26 @@ func apply(id: String, state: Node, event_id: String = "") -> bool:
             if state.rank < 3:
                 state.rank += 1
             else:
-                state.score += 1000
+                state.add_score(1000)
         else:
             state.weapon = id.to_upper()
     elif id == "life":
-        if claimed_lives.has(event_id):
+        if claimed_lives.has(event_id) or state.claimed_lives.has(event_id):
             return false
         claimed_lives[event_id] = true
+        state.claimed_lives[event_id] = true
         if state.lives < 6:
             state.lives += 1
         else:
-            state.score += 2000
+            state.add_score(2000)
     else:
         var property: String = {"bit":"bits","missile":"missile_rank","bomb":"bombs"}[id]
         var value: int = state.get(property)
         if value < 2:
             state.set(property,value+1)
         else:
-            state.score += 1000
+            state.add_score(1000)
+    state.add_score(100)
     return true
 
 func step(ship_previous: Vector2, ship: Vector2, state: Node, world: RefCounted) -> void:
@@ -53,7 +56,8 @@ func step(ship_previous: Vector2, ship: Vector2, state: Node, world: RefCounted)
             # can replace the center policy in VL-005 without changing pickups.
             var found := false
             for distance: int in range(0,313,4):
-                var toward_center := -1 if next.y > 180 else 1
+                var center: float = corridor_center.call(next.x) if corridor_center.is_valid() else 180.0
+                var toward_center := -1 if next.y > center else 1
                 for sign_value: int in [toward_center,-toward_center]:
                     var candidate := Vector2(next.x,clampf(next.y+sign_value*distance,32,328))
                     if not world.solid_hit(candidate,candidate,8):
@@ -89,3 +93,11 @@ func _draw() -> void:
         draw_rect(Rect2(item.position-Vector2(8,8),Vector2(16,16)),Color("08111e"))
         draw_rect(Rect2(item.position-Vector2(8,8),Vector2(16,16)),color,false,1)
         draw_string(ThemeDB.fallback_font,item.position+Vector2(-5,5),glyphs[IDS.find(item.id)],HORIZONTAL_ALIGNMENT_LEFT,-1,12,color)
+
+func _life_claimed(event_id: String) -> bool:
+    if claimed_lives.has(event_id):
+        return true
+    if not is_inside_tree():
+        return false
+    var state := get_tree().root.get_node_or_null("GameState")
+    return state != null and state.claimed_lives.has(event_id)

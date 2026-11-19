@@ -26,7 +26,7 @@ func rebuild() -> void:
     cells.clear()
     for id: int in shapes:
         var shape: Dictionary = shapes[id]
-        var extent: Vector2 = shape.half_size if shape.kind == "box" else Vector2.ONE * shape.radius
+        var extent: Vector2 = shape.half_size if shape.kind != "circle" else Vector2.ONE * shape.radius
         var bounds := Rect2(shape.previous - extent, extent * 2).merge(Rect2(shape.position - extent, extent * 2))
         for cell: Vector2i in _cells_for(bounds):
             if not cells.has(cell):
@@ -120,13 +120,7 @@ static func sweep(start: Vector2, finish: Vector2, axis: Vector2, size: Vector2,
     var relative_end: Vector2 = finish - shape.position
     if shape.kind == "circle":
         return capsule_toi(relative_start, relative_end, axis, half, radius + shape.radius)
-    var points := PackedVector2Array()
-    var extent: Vector2 = shape.half_size
-    for x: float in [-extent.x, extent.x]:
-        for y: float in [-extent.y, extent.y]:
-            points.append(Vector2(x,y) - axis * half)
-            points.append(Vector2(x,y) + axis * half)
-    return rounded_polygon_toi(relative_start, relative_end, Geometry2D.convex_hull(points), radius)
+    return rounded_polygon_toi(relative_start, relative_end, expanded_hull(shape,axis,half), radius)
 
 func clear() -> void:
     shapes.clear()
@@ -138,13 +132,7 @@ static func contact_normal(start: Vector2, finish: Vector2, axis: Vector2, size:
     if shape.kind == "circle":
         var closest := point - axis * clampf(point.dot(axis),-half,half)
         return closest.normalized() if not closest.is_zero_approx() else -axis
-    var vertices := PackedVector2Array()
-    var extent: Vector2 = shape.half_size
-    for x: float in [-extent.x,extent.x]:
-        for y: float in [-extent.y,extent.y]:
-            vertices.append(Vector2(x,y)-axis*half)
-            vertices.append(Vector2(x,y)+axis*half)
-    var hull := Geometry2D.convex_hull(vertices)
+    var hull := expanded_hull(shape,axis,half)
     var best := INF
     var result := -axis
     for i: int in hull.size()-1:
@@ -159,7 +147,39 @@ static func contact_normal(start: Vector2, finish: Vector2, axis: Vector2, size:
     return result
 
 func solid_hit(start: Vector2, finish: Vector2, radius: float) -> bool:
+    var extent := Vector2.ONE*radius
+    var query := Rect2(start-extent,extent*2).merge(Rect2(finish-extent,extent*2))
     for shape: Dictionary in shapes.values():
-        if shape.category == "terrain" and sweep(start,finish,Vector2.RIGHT,Vector2.ONE*radius*2,shape) != INF:
+        if shape.category != "terrain":
+            continue
+        var bounds := Rect2(shape.previous-shape.half_size,shape.half_size*2).merge(Rect2(shape.position-shape.half_size,shape.half_size*2))
+        if query.intersects(bounds,true) and sweep(start,finish,Vector2.RIGHT,Vector2.ONE*radius*2,shape) != INF:
             return true
     return false
+
+
+static func expanded_hull(shape: Dictionary, axis: Vector2, half: float) -> PackedVector2Array:
+    var vertices := PackedVector2Array()
+    if shape.kind == "polygon":
+        for vertex: Vector2 in shape.vertices:
+            vertices.append(vertex-axis*half)
+            vertices.append(vertex+axis*half)
+    else:
+        var extent: Vector2 = shape.half_size
+        for x: float in [-extent.x,extent.x]:
+            for y: float in [-extent.y,extent.y]:
+                vertices.append(Vector2(x,y)-axis*half)
+                vertices.append(Vector2(x,y)+axis*half)
+    return Geometry2D.convex_hull(vertices)
+
+func add_polygon(id: int, group: int, points: PackedVector2Array, previous_offset: Vector2 = Vector2.ZERO) -> void:
+    var bounds := Rect2(points[0],Vector2.ZERO)
+    for point: Vector2 in points:
+        bounds = bounds.expand(point)
+    var center := bounds.get_center()
+    var local := PackedVector2Array()
+    for point: Vector2 in points:
+        local.append(point-center)
+    shapes[id] = {"id":id,"group":group,"position":center,"previous":center+previous_offset,
+        "radius":0.0,"half_size":bounds.size/2,"category":"terrain","kind":"polygon",
+        "vertices":Geometry2D.convex_hull(local)}

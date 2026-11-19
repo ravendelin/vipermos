@@ -65,6 +65,7 @@ func show_page(next: String) -> void:
         _label(page, 18)
         _label("credits_body" if page == "credits" else ("pending" if page == "campaign" else "future"))
         if page == "campaign":
+            _button("stage_launch", _start_stage)
             _button("movement_test", _start_movement)
         _button("back", show_page.bind("menu"))
     _label("hint", 9)
@@ -90,3 +91,7 @@ func _input(event: InputEvent) -> void:
 func _start_movement() -> void:
     GameState.start_run()
     get_tree().change_scene_to_file("res://scenes/game/aegis_range.tscn")
+
+func _start_stage() -> void:
+    GameState.start_run()
+    get_tree().change_scene_to_file("res://scenes/game/stage_preview.tscn")

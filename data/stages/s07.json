@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "id": "S07",
+  "name": "Black Relay",
+  "scroll_speed": 86,
+  "duration_ticks": 7200,
+  "checkpoints_ticks": [
+    0,
+    2400,
+    4800,
+    7200
+  ],
+  "terrain": [
+    [
+      0.0,
+      24.0,
+      336.0
+    ],
+    [
+      14.0,
+      57.0,
+      312.0
+    ],
+    [
+      22.0,
+      70.0,
+      270.0
+    ],
+    [
+      32.0,
+      36.0,
+      306.0
+    ],
+    [
+      42.0,
+      24.0,
+      336.0
+    ],
+    [
+      53.0,
+      45.0,
+      300.0
+    ],
+    [
+      65.0,
+      72.0,
+      300.0
+    ],
+    [
+      74.0,
+      24.0,
+      336.0
+    ],
+    [
+      84.0,
+      52.0,
+      314.0
+    ],
+    [
+      96.0,
+      65.0,
+      286.0
+    ],
+    [
+      104.0,
+      24.0,
+      336.0
+    ],
+    [
+      120.0,
+      24.0,
+      336.0
+    ]
+  ],
+  "hazards": [
+    {
+      "id": "S07:hazard:000",
+      "kind": "gate",
+      "at_tick": 1620,
+      "width": 26.0,
+      "y": 178.0,
+      "gap_height": 132.0,
+      "amplitude": 22.0,
+      "period": 4.0
+    },
+    {
+      "id": "S07:hazard:001",
+      "kind": "worldRect",
+      "at_tick": 3360,
+      "width": 30.0,
+      "y": 190.0,
+      "height": 46.0
+    },
+    {
+      "id": "S07:hazard:002",
+      "kind": "gate",
+      "at_tick": 5400,
+      "width": 28.0,
+      "y": 180.0,
+      "gap_height": 120.0,
+      "amplitude": 24.0,
+      "period": 4.2
+    }
+  ],
+  "events": [
+    {
+      "id": "S07:000",
+      "at_tick": 180,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        125,
+        235
+      ],
+      "count": 2,
+      "gap_ticks": 48
+    },
+    {
+      "id": "S07:001",
+      "at_tick": 540,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "prism"
+    },
+    {
+      "id": "S07:002",
+      "at_tick": 840,
+      "enemy": "E13",
+      "entry": "R",
+      "y": 185.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S07:003",
+      "at_tick": 1380,
+      "enemy": "E03",
+      "entry": "B",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 120
+    },
+    {
+      "id": "S07:004",
+      "at_tick": 2040,
+      "enemy": "E07",
+      "entry": "L",
+      "y": 185.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S07:005",
+      "at_tick": 2520,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "prism"
+    },
+    {
+      "id": "S07:006",
+      "at_tick": 3060,
+      "enemy": "E12",
+      "entry": "R",
+      "y": 160.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S07:007",
+      "at_tick": 3780,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        115,
+        195,
+        250
+      ],
+      "count": 3,
+      "gap_ticks": 48
+    },
+    {
+      "id": "S07:008",
+      "at_tick": 4320,
+      "enemy": "E03",
+      "entry": "T",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 120
+    },
+    {
+      "id": "S07:009",
+      "at_tick": 4860,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 185.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "bomb"
+    },
+    {
+      "id": "S07:010",
+      "at_tick": 5100,
+      "enemy": "E07",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S07:011",
+      "at_tick": 5760,
+      "enemy": "E15",
+      "entry": "R",
+      "y": 178.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S07:012",
+      "at_tick": 6480,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 175.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "bit"
+    },
+    {
+      "id": "S07:013",
+      "at_tick": 6720,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        110,
+        240
+      ],
+      "count": 2,
+      "gap_ticks": 48
+    }
+  ],
+  "beams": [
+    {
+      "id": "S07:beam:000",
+      "at_tick": 1080,
+      "y": 94,
+      "width": 16,
+      "warning_ticks": 72,
+      "active_ticks": 33,
+      "x": 640
+    },
+    {
+      "id": "S07:beam:001",
+      "at_tick": 2820,
+      "y": 250,
+      "width": 16,
+      "warning_ticks": 72,
+      "active_ticks": 33,
+      "x": 640
+    },
+    {
+      "id": "S07:beam:002",
+      "at_tick": 4200,
+      "y": 146,
+      "width": 16,
+      "warning_ticks": 72,
+      "active_ticks": 33,
+      "x": 640
+    },
+    {
+      "id": "S07:beam:003",
+      "at_tick": 6300,
+      "y": 230,
+      "width": 16,
+      "warning_ticks": 72,
+      "active_ticks": 33,
+      "x": 640
+    }
+  ],
+  "boss": "B07"
+}

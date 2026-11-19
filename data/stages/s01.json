@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "id": "S01",
+  "name": "Silent Dock",
+  "scroll_speed": 76,
+  "duration_ticks": 7200,
+  "checkpoints_ticks": [
+    0,
+    2400,
+    4800,
+    7200
+  ],
+  "terrain": [
+    [
+      0.0,
+      24.0,
+      336.0
+    ],
+    [
+      12.0,
+      24.0,
+      336.0
+    ],
+    [
+      18.0,
+      44.0,
+      310.0
+    ],
+    [
+      29.0,
+      54.0,
+      304.0
+    ],
+    [
+      35.0,
+      24.0,
+      336.0
+    ],
+    [
+      44.0,
+      24.0,
+      336.0
+    ],
+    [
+      52.0,
+      62.0,
+      318.0
+    ],
+    [
+      64.0,
+      62.0,
+      290.0
+    ],
+    [
+      72.0,
+      24.0,
+      336.0
+    ],
+    [
+      79.0,
+      24.0,
+      336.0
+    ],
+    [
+      88.0,
+      42.0,
+      290.0
+    ],
+    [
+      98.0,
+      35.0,
+      300.0
+    ],
+    [
+      108.0,
+      24.0,
+      336.0
+    ],
+    [
+      120.0,
+      24.0,
+      336.0
+    ]
+  ],
+  "hazards": [
+    {
+      "id": "S01:hazard:000",
+      "kind": "worldRect",
+      "at_tick": 1440,
+      "width": 36.0,
+      "y": 215.0,
+      "height": 76.0
+    },
+    {
+      "id": "S01:hazard:001",
+      "kind": "worldRect",
+      "at_tick": 3600,
+      "width": 42.0,
+      "y": 122.0,
+      "height": 60.0
+    },
+    {
+      "id": "S01:hazard:002",
+      "kind": "worldRect",
+      "at_tick": 5700,
+      "width": 36.0,
+      "y": 245.0,
+      "height": 54.0
+    }
+  ],
+  "events": [
+    {
+      "id": "S01:000",
+      "at_tick": 180,
+      "enemy": "E01",
+      "entry": "R",
+      "y": [
+        120,
+        150,
+        180,
+        210
+      ],
+      "count": 4,
+      "gap_ticks": 24
+    },
+    {
+      "id": "S01:001",
+      "at_tick": 600,
+      "enemy": "E02",
+      "entry": "R",
+      "y": [
+        90,
+        250
+      ],
+      "count": 2,
+      "gap_ticks": 42
+    },
+    {
+      "id": "S01:002",
+      "at_tick": 840,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "arc"
+    },
+    {
+      "id": "S01:003",
+      "at_tick": 1200,
+      "enemy": "E01",
+      "entry": "R",
+      "y": {
+        "corr": 0.24
+      },
+      "count": 5,
+      "gap_ticks": 20
+    },
+    {
+      "id": "S01:004",
+      "at_tick": 1680,
+      "enemy": "E03",
+      "entry": "B",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 132
+    },
+    {
+      "id": "S01:005",
+      "at_tick": 1980,
+      "enemy": "E06",
+      "entry": "R",
+      "y": 171.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S01:006",
+      "at_tick": 2280,
+      "enemy": "E11",
+      "entry": "L",
+      "y": 242.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S01:007",
+      "at_tick": 2580,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 165.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "prism"
+    },
+    {
+      "id": "S01:008",
+      "at_tick": 2880,
+      "enemy": "E04",
+      "entry": "R",
+      "y": 180.0,
+      "count": 3,
+      "gap_ticks": 51
+    },
+    {
+      "id": "S01:009",
+      "at_tick": 3300,
+      "enemy": "E03",
+      "entry": "T",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 150
+    },
+    {
+      "id": "S01:010",
+      "at_tick": 3660,
+      "enemy": "E01",
+      "entry": "R",
+      "y": {
+        "corr": 0.7
+      },
+      "count": 5,
+      "gap_ticks": 21
+    },
+    {
+      "id": "S01:011",
+      "at_tick": 4080,
+      "enemy": "E08",
+      "entry": "R",
+      "y": [
+        140,
+        235
+      ],
+      "count": 2,
+      "gap_ticks": 72
+    },
+    {
+      "id": "S01:012",
+      "at_tick": 4380,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "bit"
+    },
+    {
+      "id": "S01:013",
+      "at_tick": 4860,
+      "enemy": "E02",
+      "entry": "R",
+      "y": [
+        120,
+        220,
+        165
+      ],
+      "count": 3,
+      "gap_ticks": 39
+    },
+    {
+      "id": "S01:014",
+      "at_tick": 5220,
+      "enemy": "E06",
+      "entry": "R",
+      "y": 185.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S01:015",
+      "at_tick": 5580,
+      "enemy": "E03",
+      "entry": "T",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 132
+    },
+    {
+      "id": "S01:016",
+      "at_tick": 6000,
+      "enemy": "E01",
+      "entry": "R",
+      "y": [
+        105,
+        145,
+        205,
+        240
+      ],
+      "count": 4,
+      "gap_ticks": 21
+    },
+    {
+      "id": "S01:017",
+      "at_tick": 6420,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 175.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "bomb"
+    },
+    {
+      "id": "S01:018",
+      "at_tick": 6600,
+      "enemy": "E02",
+      "entry": "R",
+      "y": [
+        125,
+        235
+      ],
+      "count": 2,
+      "gap_ticks": 51
+    }
+  ],
+  "beams": [],
+  "boss": "B01"
+}

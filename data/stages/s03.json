@@ -1,0 +1,288 @@
+{
+  "schema_version": 1,
+  "id": "S03",
+  "name": "Iron Procession",
+  "scroll_speed": 82,
+  "duration_ticks": 7200,
+  "checkpoints_ticks": [
+    0,
+    2400,
+    4800,
+    7200
+  ],
+  "terrain": [
+    [
+      0.0,
+      24.0,
+      336.0
+    ],
+    [
+      7.0,
+      24.0,
+      336.0
+    ],
+    [
+      14.0,
+      24.0,
+      254.0
+    ],
+    [
+      27.0,
+      24.0,
+      239.0
+    ],
+    [
+      35.0,
+      24.0,
+      280.0
+    ],
+    [
+      43.0,
+      24.0,
+      248.0
+    ],
+    [
+      55.0,
+      60.0,
+      250.0
+    ],
+    [
+      64.0,
+      24.0,
+      317.0
+    ],
+    [
+      73.0,
+      24.0,
+      265.0
+    ],
+    [
+      84.0,
+      24.0,
+      252.0
+    ],
+    [
+      95.0,
+      44.0,
+      270.0
+    ],
+    [
+      104.0,
+      24.0,
+      310.0
+    ],
+    [
+      108.0,
+      24.0,
+      336.0
+    ],
+    [
+      120.0,
+      24.0,
+      336.0
+    ]
+  ],
+  "hazards": [
+    {
+      "id": "S03:hazard:000",
+      "kind": "worldRect",
+      "at_tick": 1800,
+      "width": 48.0,
+      "y": 128.0,
+      "height": 60.0
+    },
+    {
+      "id": "S03:hazard:001",
+      "kind": "worldRect",
+      "at_tick": 3540,
+      "width": 34.0,
+      "y": 105.0,
+      "height": 44.0
+    },
+    {
+      "id": "S03:hazard:002",
+      "kind": "worldRect",
+      "at_tick": 5580,
+      "width": 42.0,
+      "y": 175.0,
+      "height": 48.0
+    }
+  ],
+  "events": [
+    {
+      "id": "S03:000",
+      "at_tick": 240,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        85,
+        210,
+        150
+      ],
+      "count": 3,
+      "gap_ticks": 51
+    },
+    {
+      "id": "S03:001",
+      "at_tick": 600,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 140.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "arc"
+    },
+    {
+      "id": "S03:002",
+      "at_tick": 960,
+      "enemy": "E03",
+      "entry": "B",
+      "y": null,
+      "count": 3,
+      "gap_ticks": 150
+    },
+    {
+      "id": "S03:003",
+      "at_tick": 1380,
+      "enemy": "E07",
+      "entry": "R",
+      "y": 100.0,
+      "count": 2,
+      "gap_ticks": 192
+    },
+    {
+      "id": "S03:004",
+      "at_tick": 1860,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        155,
+        205
+      ],
+      "count": 2,
+      "gap_ticks": 45
+    },
+    {
+      "id": "S03:005",
+      "at_tick": 2100,
+      "enemy": "E06",
+      "entry": "R",
+      "y": 130.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S03:006",
+      "at_tick": 2580,
+      "enemy": "E12",
+      "entry": "R",
+      "y": 120.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S03:007",
+      "at_tick": 3000,
+      "enemy": "E03",
+      "entry": "B",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 138
+    },
+    {
+      "id": "S03:008",
+      "at_tick": 3300,
+      "enemy": "E05",
+      "entry": "R",
+      "y": {
+        "corr": 0.55
+      },
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "missile"
+    },
+    {
+      "id": "S03:009",
+      "at_tick": 3600,
+      "enemy": "E11",
+      "entry": "L",
+      "y": 165.0,
+      "count": 3,
+      "gap_ticks": 48
+    },
+    {
+      "id": "S03:010",
+      "at_tick": 4080,
+      "enemy": "E07",
+      "entry": "L",
+      "y": 175.0,
+      "count": 2,
+      "gap_ticks": 216
+    },
+    {
+      "id": "S03:011",
+      "at_tick": 4440,
+      "enemy": "E03",
+      "entry": "B",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 132
+    },
+    {
+      "id": "S03:012",
+      "at_tick": 4920,
+      "enemy": "E01",
+      "entry": "R",
+      "y": [
+        65,
+        110,
+        155,
+        200
+      ],
+      "count": 4,
+      "gap_ticks": 27
+    },
+    {
+      "id": "S03:013",
+      "at_tick": 5280,
+      "enemy": "E12",
+      "entry": "R",
+      "y": 125.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S03:014",
+      "at_tick": 5700,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        120,
+        225
+      ],
+      "count": 2,
+      "gap_ticks": 51
+    },
+    {
+      "id": "S03:015",
+      "at_tick": 6120,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 170.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "prism"
+    },
+    {
+      "id": "S03:016",
+      "at_tick": 6600,
+      "enemy": "E07",
+      "entry": "R",
+      "y": 170.0,
+      "count": 1,
+      "gap_ticks": 0
+    }
+  ],
+  "beams": [],
+  "boss": "B03"
+}

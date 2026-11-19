@@ -1,0 +1,4 @@
+Godot Engine v4.7.1.stable.fedora.a13da4feb - https://godotengine.org
+
+STAGE_VALIDATION files=8 failures=0
+VL-005 content: 0 errors. All eight stage schemas/checkpoints validated; final art/audio validation is pending.

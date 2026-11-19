@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "id": "S04",
+  "name": "Glass Vault",
+  "scroll_speed": 72,
+  "duration_ticks": 7200,
+  "checkpoints_ticks": [
+    0,
+    2400,
+    4800,
+    7200
+  ],
+  "terrain": [
+    [
+      0.0,
+      24.0,
+      336.0
+    ],
+    [
+      12.0,
+      36.0,
+      324.0
+    ],
+    [
+      21.0,
+      48.0,
+      318.0
+    ],
+    [
+      32.0,
+      65.0,
+      310.0
+    ],
+    [
+      40.0,
+      24.0,
+      336.0
+    ],
+    [
+      51.0,
+      36.0,
+      320.0
+    ],
+    [
+      62.0,
+      50.0,
+      304.0
+    ],
+    [
+      70.0,
+      24.0,
+      336.0
+    ],
+    [
+      81.0,
+      30.0,
+      330.0
+    ],
+    [
+      92.0,
+      54.0,
+      302.0
+    ],
+    [
+      101.0,
+      38.0,
+      324.0
+    ],
+    [
+      108.0,
+      24.0,
+      336.0
+    ],
+    [
+      120.0,
+      24.0,
+      336.0
+    ]
+  ],
+  "hazards": [
+    {
+      "id": "S04:hazard:000",
+      "kind": "gate",
+      "at_tick": 1260,
+      "width": 24.0,
+      "y": 170.0,
+      "gap_height": 132.0,
+      "amplitude": 28.0,
+      "period": 4.2
+    },
+    {
+      "id": "S04:hazard:001",
+      "kind": "gate",
+      "at_tick": 2040,
+      "width": 24.0,
+      "y": 210.0,
+      "gap_height": 124.0,
+      "amplitude": 20.0,
+      "period": 3.6
+    },
+    {
+      "id": "S04:hazard:002",
+      "kind": "gate",
+      "at_tick": 3300,
+      "width": 28.0,
+      "y": 175.0,
+      "gap_height": 130.0,
+      "amplitude": 32.0,
+      "period": 4.8
+    },
+    {
+      "id": "S04:hazard:003",
+      "kind": "gate",
+      "at_tick": 4140,
+      "width": 24.0,
+      "y": 165.0,
+      "gap_height": 124.0,
+      "amplitude": 0.0,
+      "period": 1.0
+    },
+    {
+      "id": "S04:hazard:004",
+      "kind": "gate",
+      "at_tick": 5520,
+      "width": 28.0,
+      "y": 178.0,
+      "gap_height": 126.0,
+      "amplitude": 24.0,
+      "period": 4.4
+    },
+    {
+      "id": "S04:hazard:005",
+      "kind": "gate",
+      "at_tick": 6180,
+      "width": 24.0,
+      "y": 180.0,
+      "gap_height": 128.0,
+      "amplitude": 20.0,
+      "period": 4.0
+    }
+  ],
+  "events": [
+    {
+      "id": "S04:000",
+      "at_tick": 120,
+      "enemy": "E16",
+      "entry": "R",
+      "y": [
+        90,
+        230
+      ],
+      "count": 2,
+      "gap_ticks": 42,
+      "variant": "DOWN"
+    },
+    {
+      "id": "S04:001",
+      "at_tick": 480,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "prism"
+    },
+    {
+      "id": "S04:002",
+      "at_tick": 840,
+      "enemy": "E02",
+      "entry": "R",
+      "y": [
+        120,
+        205
+      ],
+      "count": 2,
+      "gap_ticks": 72
+    },
+    {
+      "id": "S04:003",
+      "at_tick": 1560,
+      "enemy": "E03",
+      "entry": "T",
+      "y": null,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S04:004",
+      "at_tick": 1860,
+      "enemy": "E16",
+      "entry": "R",
+      "y": 190.0,
+      "count": 2,
+      "gap_ticks": 45,
+      "variant": "UP"
+    },
+    {
+      "id": "S04:005",
+      "at_tick": 2520,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "prism"
+    },
+    {
+      "id": "S04:006",
+      "at_tick": 2820,
+      "enemy": "E06",
+      "entry": "R",
+      "y": 160.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S04:007",
+      "at_tick": 3540,
+      "enemy": "E16",
+      "entry": "R",
+      "y": 155.0,
+      "count": 3,
+      "gap_ticks": 39,
+      "variant": "DOWN"
+    },
+    {
+      "id": "S04:008",
+      "at_tick": 3900,
+      "enemy": "E03",
+      "entry": "B",
+      "y": null,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S04:009",
+      "at_tick": 4560,
+      "enemy": "E13",
+      "entry": "R",
+      "y": 170.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S04:010",
+      "at_tick": 4920,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "bit"
+    },
+    {
+      "id": "S04:011",
+      "at_tick": 5220,
+      "enemy": "E02",
+      "entry": "R",
+      "y": [
+        140,
+        210
+      ],
+      "count": 2,
+      "gap_ticks": 54
+    },
+    {
+      "id": "S04:012",
+      "at_tick": 5880,
+      "enemy": "E16",
+      "entry": "R",
+      "y": 190.0,
+      "count": 2,
+      "gap_ticks": 45,
+      "variant": "UP"
+    },
+    {
+      "id": "S04:013",
+      "at_tick": 6720,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "bomb"
+    }
+  ],
+  "beams": [],
+  "boss": "B04"
+}

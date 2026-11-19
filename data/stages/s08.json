@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "id": "S08",
+  "name": "The Last Signal",
+  "scroll_speed": 78,
+  "duration_ticks": 7200,
+  "checkpoints_ticks": [
+    0,
+    2400,
+    4800,
+    7200
+  ],
+  "terrain": [
+    [
+      0.0,
+      24.0,
+      336.0
+    ],
+    [
+      15.0,
+      48.0,
+      304.0
+    ],
+    [
+      25.0,
+      70.0,
+      300.0
+    ],
+    [
+      34.0,
+      97.0,
+      280.0
+    ],
+    [
+      43.0,
+      24.0,
+      336.0
+    ],
+    [
+      52.0,
+      80.0,
+      302.0
+    ],
+    [
+      62.0,
+      48.0,
+      263.0
+    ],
+    [
+      72.0,
+      24.0,
+      336.0
+    ],
+    [
+      82.0,
+      50.0,
+      312.0
+    ],
+    [
+      94.0,
+      92.0,
+      286.0
+    ],
+    [
+      102.0,
+      42.0,
+      302.0
+    ],
+    [
+      108.0,
+      24.0,
+      336.0
+    ],
+    [
+      120.0,
+      24.0,
+      336.0
+    ]
+  ],
+  "hazards": [
+    {
+      "id": "S08:hazard:000",
+      "kind": "oscRect",
+      "at_tick": 1680,
+      "width": 26.0,
+      "y": 185.0,
+      "height": 44.0,
+      "amplitude": 20.0,
+      "period": 3.6,
+      "phase": 0.0
+    },
+    {
+      "id": "S08:hazard:001",
+      "kind": "gate",
+      "at_tick": 3420,
+      "width": 28.0,
+      "y": 180.0,
+      "gap_height": 126.0,
+      "amplitude": 22.0,
+      "period": 4.2
+    },
+    {
+      "id": "S08:hazard:002",
+      "kind": "oscRect",
+      "at_tick": 4200,
+      "width": 32.0,
+      "y": 210.0,
+      "height": 48.0,
+      "amplitude": 30.0,
+      "period": 4.0,
+      "phase": 0.0
+    },
+    {
+      "id": "S08:hazard:003",
+      "kind": "worldRect",
+      "at_tick": 5640,
+      "width": 28.0,
+      "y": 176.0,
+      "height": 38.0
+    }
+  ],
+  "events": [
+    {
+      "id": "S08:000",
+      "at_tick": 180,
+      "enemy": "E01",
+      "entry": "R",
+      "y": [
+        95,
+        135,
+        180,
+        225
+      ],
+      "count": 4,
+      "gap_ticks": 26
+    },
+    {
+      "id": "S08:001",
+      "at_tick": 540,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "arc"
+    },
+    {
+      "id": "S08:002",
+      "at_tick": 840,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        140,
+        245
+      ],
+      "count": 2,
+      "gap_ticks": 60
+    },
+    {
+      "id": "S08:003",
+      "at_tick": 1380,
+      "enemy": "E10",
+      "entry": "T",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 150
+    },
+    {
+      "id": "S08:004",
+      "at_tick": 1920,
+      "enemy": "E08",
+      "entry": "R",
+      "y": {
+        "corr": 0.55
+      },
+      "count": 2,
+      "gap_ticks": 72
+    },
+    {
+      "id": "S08:005",
+      "at_tick": 2520,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "arc"
+    },
+    {
+      "id": "S08:006",
+      "at_tick": 2760,
+      "enemy": "E06",
+      "entry": "R",
+      "y": 175.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S08:007",
+      "at_tick": 3180,
+      "enemy": "E03",
+      "entry": "B",
+      "y": null,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S08:008",
+      "at_tick": 3840,
+      "enemy": "E16",
+      "entry": "R",
+      "y": [
+        132,
+        220
+      ],
+      "count": 3,
+      "gap_ticks": 45,
+      "variant": "DOWN"
+    },
+    {
+      "id": "S08:009",
+      "at_tick": 4380,
+      "enemy": "E13",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S08:010",
+      "at_tick": 4860,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "bomb"
+    },
+    {
+      "id": "S08:011",
+      "at_tick": 5100,
+      "enemy": "E12",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S08:012",
+      "at_tick": 5700,
+      "enemy": "E11",
+      "entry": "L",
+      "y": [
+        124,
+        245
+      ],
+      "count": 2,
+      "gap_ticks": 48
+    },
+    {
+      "id": "S08:013",
+      "at_tick": 6120,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "life"
+    },
+    {
+      "id": "S08:014",
+      "at_tick": 6420,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 210.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "missile"
+    },
+    {
+      "id": "S08:015",
+      "at_tick": 6720,
+      "enemy": "E07",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0
+    }
+  ],
+  "beams": [
+    {
+      "id": "S08:beam:000",
+      "at_tick": 1080,
+      "y": 230,
+      "width": 16,
+      "warning_ticks": 72,
+      "active_ticks": 30,
+      "x": 640
+    },
+    {
+      "id": "S08:beam:001",
+      "at_tick": 5280,
+      "y": 132,
+      "width": 16,
+      "warning_ticks": 72,
+      "active_ticks": 30,
+      "x": 640
+    }
+  ],
+  "boss": "B08"
+}

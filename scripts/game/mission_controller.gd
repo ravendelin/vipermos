@@ -84,31 +84,8 @@ func fixed_tick() -> void:
             intro_label.hide()
             input_snapshot.suppress_until_release()
     elif phase in ["SCROLL", "BOSS"]:
-        var previous_player: Vector2 = player.position
-        player.step(snapshot)
-        pickups.step(previous_player,player.position,GameState,projectiles.world)
-        GameState.speed_index = player.speed_index
-        var shot: String = weapons.step(snapshot)
-        if not shot.is_empty():
-            projectiles.spawn(shot, player.position + Vector2(23,0))
-            player.muzzle_ticks = 3
-        player.charge_visual_ticks = weapons.charge_ticks
-        aegis.step(player.position,snapshot,projectiles,GameState.weapon,GameState.rank)
-        support.step(player.position,snapshot,GameState,projectiles,defense)
-        if has_node("World/Targets"):
-            $World/Targets.simulation_tick(stage_tick)
-        var shields: Array[Dictionary] = support.shields()
-        if aegis.shield_active:
-            shields.append({"kind":"circle","radius":13.0,"position":aegis.position,"previous":aegis.previous})
-        # Defense sees previous/current terrain before friendly cleanup settles it.
-        defense.step(previous_player,player.position,shields,projectiles.world)
-        GameState.assist_shield = defense.assist
-        projectiles.step()
+        simulate_active(snapshot)
         stage_tick += 1
-        if defense.dead:
-            set_phase("DEATH")
-            intro_label.text = Locale.text("range_dead")
-            intro_label.show()
     physics_us = Time.get_ticks_usec() - started
     hud.refresh(stage_tick, physics_us, charge_ticks, projectiles.active_count, aegis.state, defense.active_count)
 
@@ -172,11 +149,6 @@ func _exit_tree() -> void:
         pickups.clear(true)
     get_tree().paused = false
 
-func _draw() -> void:
-    # Static development backdrop; fixed world coordinates, no camera drift.
-    draw_rect(Rect2(0,24,640,312), Color("090e1c"))
-    for i: int in 80:
-        draw_rect(Rect2((i * 137 + 31) % 640, 25 + (i * 83) % 308, 1, 1), Color("274254"))
 
 func _pause_primary() -> void:
     if pause_panel.get_child(1).pressed.is_connected(return_to_menu):
@@ -206,3 +178,35 @@ func set_phase(next: String) -> void:
         aegis.contact_cooldowns.clear()
         if has_node("World/Targets"):
             $World/Targets.queue_redraw()
+
+func simulate_active(snapshot: Dictionary, allow_movement: bool = true) -> void:
+    var previous_player: Vector2 = player.position
+    var player_input := snapshot.duplicate()
+    if not allow_movement:
+        player_input.move = Vector2.ZERO
+    player.step(player_input)
+    pickups.step(previous_player,player.position,GameState,projectiles.world)
+    GameState.speed_index = player.speed_index
+    var shot: String = weapons.step(snapshot)
+    if not shot.is_empty():
+        projectiles.spawn(shot, player.position + Vector2(23,0))
+        player.muzzle_ticks = 3
+    player.charge_visual_ticks = weapons.charge_ticks
+    aegis.step(player.position,snapshot,projectiles,GameState.weapon,GameState.rank)
+    support.step(player.position,snapshot,GameState,projectiles,defense)
+    if has_node("World/Targets"):
+        $World/Targets.simulation_tick(stage_tick)
+    var shields: Array[Dictionary] = support.shields()
+    if aegis.shield_active:
+        shields.append({"kind":"circle","radius":13.0,"position":aegis.position,"previous":aegis.previous})
+    # Defense sees previous/current terrain before friendly cleanup settles it.
+    defense.step(previous_player,player.position,shields,projectiles.world,active_hazards())
+    GameState.assist_shield = defense.assist
+    projectiles.step()
+    if defense.dead:
+        set_phase("DEATH")
+        intro_label.text = Locale.text("range_dead")
+        intro_label.show()
+
+func active_hazards() -> Array:
+    return []

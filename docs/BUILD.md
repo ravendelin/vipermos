@@ -65,3 +65,15 @@ Same editor/runtime version pair. `tools/build_linux_smoke.py` rebuilt the PCK w
 AEGIS, support/pickup/hostile systems and passed verified title boot. Matching
 4.7.1 templates are still absent; cross-patch smoke is not a release certification.
 Source graphical capture: `godot --path . --script tests/capture_aegis.gd`.
+
+
+## VL-005 stage pipeline
+
+Stage JSON files are included in both export presets (`data/stages/*.json`). The
+local Linux smoke was rebuilt and verified at title boot. Source stage captures:
+`godot --path . --script tests/capture_stages.gd`. `tools/validate_content.py` now
+requires Godot and invokes `tests/validate_stages.gd`; it rejects failed schemas,
+unsafe checkpoints, ERROR output and missing success markers.
+`tools/import_stage_specs.py` uses only Python standard-library modules and the
+supplied GDD; regeneration is optional, never part of game startup. It uses explicit
+half-up seconds-to-ticks rounding. Art/audio generation still starts in VL-008.

@@ -296,7 +296,7 @@ func _pickups(pickups: Node2D, state: Node, shots: Node2D, check: Callable) -> v
     check.call(state.weapon == "PRISM" and state.rank == 2,"type change preserves rank")
     pickups.apply("prism",state)
     pickups.apply("prism",state)
-    check.call(state.rank == 3 and state.score == 1000,"same type rank cap awards 1000")
+    check.call(state.rank == 3 and state.score == 1400,"same type rank cap bonus plus 100 per collection")
     for type: String in ["bit","missile","bomb"]:
         for i: int in 3:
             pickups.apply(type,state)
@@ -305,7 +305,7 @@ func _pickups(pickups: Node2D, state: Node, shots: Node2D, check: Callable) -> v
     var score: int = state.score
     pickups.apply("life",state,"one-life")
     pickups.apply("life",state,"one-life")
-    check.call(state.score == score+2000 and state.lives == 6,"life cap bonus once per event")
+    check.call(state.score == score+2100 and state.lives == 6,"life cap bonus once per event")
     check.call(not pickups.spawn("life",Vector2(200,180),"one-life"),"consumed life cannot respawn")
     check.call(not pickups.spawn("arc",Vector2(700,180),"offscreen",true),"offscreen carrier cannot spawn pickup")
     pickups.spawn("ember",Vector2(100,180),"collect")

@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "id": "S06",
+  "name": "Nerve Cathedral",
+  "scroll_speed": 66,
+  "duration_ticks": 7200,
+  "checkpoints_ticks": [
+    0,
+    2400,
+    4800,
+    7200
+  ],
+  "terrain": [
+    [
+      0.0,
+      24.0,
+      336.0
+    ],
+    [
+      12.0,
+      62.0,
+      305.0
+    ],
+    [
+      23.0,
+      112.0,
+      282.0
+    ],
+    [
+      34.0,
+      78.0,
+      246.0
+    ],
+    [
+      42.0,
+      48.0,
+      312.0
+    ],
+    [
+      50.0,
+      110.0,
+      304.0
+    ],
+    [
+      60.0,
+      112.0,
+      262.0
+    ],
+    [
+      69.0,
+      65.0,
+      294.0
+    ],
+    [
+      77.0,
+      24.0,
+      336.0
+    ],
+    [
+      85.0,
+      64.0,
+      302.0
+    ],
+    [
+      94.0,
+      119.0,
+      290.0
+    ],
+    [
+      102.0,
+      70.0,
+      268.0
+    ],
+    [
+      108.0,
+      24.0,
+      336.0
+    ],
+    [
+      120.0,
+      24.0,
+      336.0
+    ]
+  ],
+  "hazards": [
+    {
+      "id": "S06:hazard:000",
+      "kind": "oscRect",
+      "at_tick": 1680,
+      "width": 22.0,
+      "y": 190.0,
+      "height": 36.0,
+      "amplitude": 16.0,
+      "period": 3.4,
+      "phase": 0.0
+    },
+    {
+      "id": "S06:hazard:001",
+      "kind": "oscRect",
+      "at_tick": 3360,
+      "width": 22.0,
+      "y": 195.0,
+      "height": 36.0,
+      "amplitude": 16.0,
+      "period": 4.0,
+      "phase": 0.0
+    },
+    {
+      "id": "S06:hazard:002",
+      "kind": "worldRect",
+      "at_tick": 5820,
+      "width": 24.0,
+      "y": 205.0,
+      "height": 32.0
+    }
+  ],
+  "events": [
+    {
+      "id": "S06:000",
+      "at_tick": 120,
+      "enemy": "E09",
+      "entry": "R",
+      "y": [
+        140,
+        215
+      ],
+      "count": 3,
+      "gap_ticks": 45
+    },
+    {
+      "id": "S06:001",
+      "at_tick": 540,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "arc"
+    },
+    {
+      "id": "S06:002",
+      "at_tick": 960,
+      "enemy": "E10",
+      "entry": "T",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 168
+    },
+    {
+      "id": "S06:003",
+      "at_tick": 1500,
+      "enemy": "E08",
+      "entry": "R",
+      "y": {
+        "corr": 0.56
+      },
+      "count": 2,
+      "gap_ticks": 72
+    },
+    {
+      "id": "S06:004",
+      "at_tick": 1980,
+      "enemy": "E10",
+      "entry": "B",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 168
+    },
+    {
+      "id": "S06:005",
+      "at_tick": 2580,
+      "enemy": "E05",
+      "entry": "R",
+      "y": 185.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "drop": "arc"
+    },
+    {
+      "id": "S06:006",
+      "at_tick": 2880,
+      "enemy": "E09",
+      "entry": "R",
+      "y": {
+        "corr": 0.6
+      },
+      "count": 3,
+      "gap_ticks": 48
+    },
+    {
+      "id": "S06:007",
+      "at_tick": 3240,
+      "enemy": "E10",
+      "entry": "T",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 168
+    },
+    {
+      "id": "S06:008",
+      "at_tick": 3720,
+      "enemy": "E08",
+      "entry": "R",
+      "y": {
+        "corr": 0.55
+      },
+      "count": 2,
+      "gap_ticks": 72
+    },
+    {
+      "id": "S06:009",
+      "at_tick": 4380,
+      "enemy": "E14",
+      "entry": "R",
+      "y": 185.0,
+      "count": 1,
+      "gap_ticks": 0
+    },
+    {
+      "id": "S06:010",
+      "at_tick": 4920,
+      "enemy": "PICKUP",
+      "entry": "R",
+      "y": 180.0,
+      "count": 1,
+      "gap_ticks": 0,
+      "pickup": "bomb"
+    },
+    {
+      "id": "S06:011",
+      "at_tick": 5100,
+      "enemy": "E10",
+      "entry": "B",
+      "y": null,
+      "count": 2,
+      "gap_ticks": 168
+    },
+    {
+      "id": "S06:012",
+      "at_tick": 5520,
+      "enemy": "E09",
+      "entry": "R",
+      "y": {
+        "corr": 0.5
+      },
+      "count": 3,
+      "gap_ticks": 42
+    },
+    {
+      "id": "S06:013",
+      "at_tick": 6180,
+      "enemy": "E08",
+      "entry": "R",
+      "y": {
+        "corr": 0.52
+      },
+      "count": 2,
+      "gap_ticks": 78
+    },
+    {
+      "id": "S06:014",
+      "at_tick": 6660,
+      "enemy": "E04",
+      "entry": "R",
+      "y": [
+        110,
+        250
+      ],
+      "count": 2,
+      "gap_ticks": 54
+    }
+  ],
+  "beams": [],
+  "boss": "B06"
+}

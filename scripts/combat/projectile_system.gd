@@ -84,7 +84,8 @@ func _paths(bullet: Dictionary, finish: Vector2) -> Array[Dictionary]:
         var first := INF
         var obstacle := -1
         var obstacle_shape: Dictionary = {}
-        for id: int in world.shapes:
+        var extent: Vector2 = axis.abs()*maxf(0,(bullet.size.x-bullet.size.y)/2)+Vector2.ONE*bullet.size.y/2
+        for id: int in world.candidates(start,finish,extent):
             var shape: Dictionary = world.shapes[id]
             if shape.category not in ["terrain","armor"]:
                 continue

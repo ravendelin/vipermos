@@ -9,7 +9,7 @@
   "credits": "CREDITS",
   "quit": "QUIT",
   "back": "BACK",
-  "build": "VL-004 / AEGIS BUILD",
+  "build": "VL-005 / STAGE SYSTEMS",
   "pending": "Campaign systems arrive in VL-002\u2013VL-007.\nThis build verifies the project foundation.",
   "future": "This screen is scheduled for VL-013.",
   "credits_body": "VOID LANTERN\nOriginal game in development.\nBuilt with Godot Engine (MIT).\nReference images are not shipped as game assets.",
@@ -35,5 +35,14 @@
   "aegis_return": "AEGIS: RETURNING",
   "aegis_swap": "AEGIS: SWITCHING",
   "aegis_fallback": "AEGIS: RECALLING",
-  "aegis_stowed": "AEGIS: STOWED"
+  "aegis_stowed": "AEGIS: STOWED",
+  "stage_preview": "VL-005 / GEOMETRY AND TIMELINE PREVIEW",
+  "stage_error": "STAGE DATA ERROR / SEE LOG",
+  "stage_recovering": "SHIP LOST / RESTORING CHECKPOINT",
+  "stage_game_over": "GAME OVER / R RESTART PREVIEW",
+  "boss_warning": "WARNING / BOSS APPROACHING",
+  "boss_handoff": "BOSS HANDOFF READY\nBOSS ACTOR ARRIVES IN VL-007",
+  "stage_status": "%s T%d CP%d E%d %s",
+  "stage_launch": "LAUNCH STAGE PREVIEW",
+  "stage_controls": "1\u20134 CHECKPOINTS / N NEXT GEOMETRY / R RESTART"
 }

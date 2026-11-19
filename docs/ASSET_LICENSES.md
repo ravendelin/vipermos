@@ -6,6 +6,7 @@
 | Godot Engine runtime | Godot contributors, MIT; license copied into `assets/licenses/Godot-LICENSE.txt` | Local smoke bundle |
 | Engine bundled components / fallback font | Engine copyright and third-party terms in `assets/licenses/Godot-COPYRIGHT.txt` | Engine built-ins |
 | `docs/images/*.jpg` | User-supplied visual references; ownership/license not asserted | Documentation only; `.gdignore` and export exclusions |
+| Development sampled terrain, gates and beam visuals | Original GDScript rendering from authored GDD geometry; not final tiles/art | Stage preview |
 | Development AEGIS/bit/pickup/hostile-shot geometry | Original GDScript drawing; temporary pre-VL-008 | Module range only |
 | Development weapon-range targets, capsule shots, charge halo and gauge | Original GDScript geometry/UI, temporary before VL-008 | Weapon-range build |
 | Development N-07 silhouette and starfield | Original authored GDScript geometry; temporary pre-VL-008 visuals | Movement build only |
