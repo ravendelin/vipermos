@@ -1,0 +1,9 @@
+Godot Engine v4.7.1.stable.fedora.a13da4feb - https://godotengine.org
+OpenGL API 4.6 (Core Profile) Mesa 26.2.6 - Compatibility - Using Device: AMD - AMD Radeon RX 6600 (radeonsi, navi23, ACO, DRM 3.64, 7.3.4-300.fc45.x86_64)
+
+VOID_LANTERN_MISSION_OK phase=INTRO
+CAPTURE ARC bullets=15 aegis=ATTACHED_FRONT result=0
+CAPTURE PRISM bullets=13 aegis=ATTACHED_FRONT result=0
+CAPTURE EMBER bullets=11 aegis=ATTACHED_FRONT result=0
+DETACHED state=FREE position=(300.0, 180.0)
+VISUAL errors=0

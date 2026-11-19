@@ -15,6 +15,10 @@ var physics_us: int = 0
 var leaving: bool = false
 @onready var player: Node2D = $World/Player
 @onready var projectiles: Node2D = $World/Projectiles
+@onready var aegis: Node2D = $World/Aegis
+@onready var defense: Node2D = $World/Defense
+@onready var support: Node2D = $World/Support
+@onready var pickups: Node2D = $World/Pickups
 @onready var hud: CanvasLayer = $HUD
 @onready var overlay: CanvasLayer = $Overlay
 var pause_panel: VBoxContainer
@@ -24,6 +28,8 @@ func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
     player.position = Vector2(96,180)
     player.speed_index = GameState.speed_index
+    aegis.reset(player.position)
+    defense.reset(GameState.assist_shield)
     input_snapshot.suppress_until_release()
     Input.joy_connection_changed.connect(_joy_changed)
     overlay.layer = 20
@@ -42,7 +48,7 @@ func _ready() -> void:
         button.pressed.connect(entry[1])
         pause_panel.add_child(button)
     pause_panel.hide()
-    hud.refresh(stage_tick, physics_us, charge_ticks, projectiles.active_count)
+    hud.refresh(stage_tick, physics_us, charge_ticks, projectiles.active_count, aegis.state, defense.active_count)
     queue_redraw()
     print("VOID_LANTERN_MISSION_OK phase=INTRO")
 
@@ -78,17 +84,33 @@ func fixed_tick() -> void:
             intro_label.hide()
             input_snapshot.suppress_until_release()
     elif phase in ["SCROLL", "BOSS"]:
+        var previous_player: Vector2 = player.position
         player.step(snapshot)
+        pickups.step(previous_player,player.position,GameState,projectiles.world)
         GameState.speed_index = player.speed_index
         var shot: String = weapons.step(snapshot)
         if not shot.is_empty():
             projectiles.spawn(shot, player.position + Vector2(23,0))
             player.muzzle_ticks = 3
         player.charge_visual_ticks = weapons.charge_ticks
+        aegis.step(player.position,snapshot,projectiles,GameState.weapon,GameState.rank)
+        support.step(player.position,snapshot,GameState,projectiles,defense)
+        if has_node("World/Targets"):
+            $World/Targets.simulation_tick(stage_tick)
+        var shields: Array[Dictionary] = support.shields()
+        if aegis.shield_active:
+            shields.append({"kind":"circle","radius":13.0,"position":aegis.position,"previous":aegis.previous})
+        # Defense sees previous/current terrain before friendly cleanup settles it.
+        defense.step(previous_player,player.position,shields,projectiles.world)
+        GameState.assist_shield = defense.assist
         projectiles.step()
         stage_tick += 1
+        if defense.dead:
+            set_phase("DEATH")
+            intro_label.text = Locale.text("range_dead")
+            intro_label.show()
     physics_us = Time.get_ticks_usec() - started
-    hud.refresh(stage_tick, physics_us, charge_ticks, projectiles.active_count)
+    hud.refresh(stage_tick, physics_us, charge_ticks, projectiles.active_count, aegis.state, defense.active_count)
 
 func pause() -> void:
     if leaving:
@@ -144,6 +166,10 @@ func _exit_tree() -> void:
     weapons.reset()
     if is_instance_valid(projectiles):
         projectiles.clear()
+    if is_instance_valid(defense):
+        defense.reset()
+        support.reset()
+        pickups.clear(true)
     get_tree().paused = false
 
 func _draw() -> void:
@@ -165,7 +191,7 @@ func cancel_charge() -> void:
         player.charge_visual_ticks = 0
         player.queue_redraw()
     if is_instance_valid(hud):
-        hud.refresh(stage_tick, physics_us, 0, projectiles.active_count)
+        hud.refresh(stage_tick, physics_us, 0, projectiles.active_count, aegis.state, defense.active_count)
 
 func set_phase(next: String) -> void:
     cancel_charge()
@@ -173,3 +199,10 @@ func set_phase(next: String) -> void:
     phase = next
     if next not in ["SCROLL", "BOSS"]:
         projectiles.clear()
+        defense.reset()
+        support.reset()
+        pickups.clear()
+        aegis.shield_active = false
+        aegis.contact_cooldowns.clear()
+        if has_node("World/Targets"):
+            $World/Targets.queue_redraw()

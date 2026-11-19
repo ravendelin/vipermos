@@ -131,3 +131,35 @@ static func sweep(start: Vector2, finish: Vector2, axis: Vector2, size: Vector2,
 func clear() -> void:
     shapes.clear()
     cells.clear()
+
+static func contact_normal(start: Vector2, finish: Vector2, axis: Vector2, size: Vector2, shape: Dictionary, time: float) -> Vector2:
+    var point: Vector2 = start.lerp(finish,time) - Vector2(shape.previous).lerp(shape.position,time)
+    var half := maxf(0, (size.x-size.y)/2)
+    if shape.kind == "circle":
+        var closest := point - axis * clampf(point.dot(axis),-half,half)
+        return closest.normalized() if not closest.is_zero_approx() else -axis
+    var vertices := PackedVector2Array()
+    var extent: Vector2 = shape.half_size
+    for x: float in [-extent.x,extent.x]:
+        for y: float in [-extent.y,extent.y]:
+            vertices.append(Vector2(x,y)-axis*half)
+            vertices.append(Vector2(x,y)+axis*half)
+    var hull := Geometry2D.convex_hull(vertices)
+    var best := INF
+    var result := -axis
+    for i: int in hull.size()-1:
+        var closest := Geometry2D.get_closest_point_to_segment(point,hull[i],hull[i+1])
+        var distance := point.distance_squared_to(closest)
+        if distance < best:
+            best = distance
+            result = (point-closest).normalized()
+            if result.is_zero_approx():
+                var edge := hull[i+1]-hull[i]
+                result = Vector2(edge.y,-edge.x).normalized()
+    return result
+
+func solid_hit(start: Vector2, finish: Vector2, radius: float) -> bool:
+    for shape: Dictionary in shapes.values():
+        if shape.category == "terrain" and sweep(start,finish,Vector2.RIGHT,Vector2.ONE*radius*2,shape) != INF:
+            return true
+    return false

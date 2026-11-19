@@ -228,3 +228,103 @@ matched-template Linux export or full packaged range interaction is claimed.
 Range shapes are explicit development fixtures permitted before VL-008, not final
 art or enemy archetypes. Sound, final sprites/animations, Toggle Charge settings UI,
 AEGIS, hostile projectiles, moving terrain and campaign remain their later milestones.
+
+
+# Actual verification — VL-004
+
+Date: 2026-11-18. Source baseline: `5cd5fd9`. Tested engine/runtime/host unchanged.
+User reported VL-003 works before this work; no human module-range pass claimed.
+
+| Command | Actual result |
+|---|---|
+| `godot --headless --path . --editor --import --quit` | Exit 0; scripts/scenes import without ERROR output |
+| `godot --headless --path . --script tests/run_all.gd` | Exit 0; **416 assertions, 0 failures** |
+| `godot --path . --script tests/capture_aegis.gd` | Exit 0; ARC/PRISM/EMBER rank-3 captures, detached `FREE` at (300,180); 0 visual errors |
+| `python3 tools/validate_content.py` | Exit 0; VL-004 file/locale checks; stage/art/audio manifests not yet claimed |
+| `python3 tools/build_linux_smoke.py --runtime "$HOME/.local/share/godot/export_templates/4.7.2.stable/linux_release.x86_64"` | Exit 0; updated PCK, title boot marker present, no ERROR output |
+| `git diff --check` | Exit 0 |
+
+Evidence: `qa/vl-004-{import,tests,visual,linux-smoke}.log`,
+`qa/vl-004-{arc,prism,ember,detached}.png`. Screenshots are actual 640×360 rendered
+viewports. Inspected PRISM/EMBER/detached captures: module, support weapons, colored
+shots, target HP, HUD and range controls are visible. Module art is development
+geometry, not final pixel sprite animation or audio.
+
+## Additional automated coverage (125 assertions)
+
+- T007/T008: front start, exact 12-tick swap with inactive shield/fire, 21-tick
+  launch at 330px/s, detached desired-side semantics, recall, nearest safe port,
+  invisible nine-tick fallback without a swept teleport shield, blocked/edge
+  ports and six-tick stowed retry. Two 300-tick spam replays produce identical
+  signatures and no invalid/stale shield states.
+- T009/T015/T016 relevant scope: front/rear ordinary shot interception, ship-first
+  contact remains lethal, heavy orb bypass, bit interception and orb bypass,
+  beam-like hazard active/inactive contracts, Assist absorbs simultaneous hits
+  once, terrain bypasses invulnerability. Real beam emitters/clipping and enemy
+  body actors are not yet implemented; these are collision fixtures.
+- All nine type/rank patterns: exact volley counts/damage/cooldowns, rear fan
+  mirrors X while preserving Y, detached universal shot, charge suppression.
+  Contact damage is 5 per unique group every 12 ticks, independent across targets;
+  duplicate colliders do not amplify damage; dead-target cooldown entries removed.
+- T012: two PRISM bounces then termination on third contact within a tick, remaining
+  path consumed after reflection, diagonal corner normal, reflected path can hit
+  another target in the same tick. No unbounded corner loop.
+- T013: EMBER 160°/s and missile 120°/s turn limits, dead-target straight flight until
+  reacquisition, nine-tick reacquisition, missile forward/range restriction and
+  138-tick TTL. ARC deterministic sine uses A=12, period 0.48s.
+- T011 and pickups: matching type ranks up, changing type preserves rank, rank and
+  support caps/bonuses, life event cannot award twice, offscreen carrier rejection,
+  swept ship collection, 38px/s drift, offscreen removal, deterministic slide to
+  unblocked Y, simultaneous pickups apply in spawn order.
+- Bits at y±25, two-bit/two-missile volley, damage/TTL, blocked bit stows, charge
+  suppresses bits/missiles. Hostile pool max512 and reset cleanup.
+- T017: bomb consumes one, six warning ticks, one impulse clears ordinary and
+  heavy on-screen shots, per-group 25 ordinary damage, max30 total per boss,
+  invulnerable boss section unaffected, subsequent bullets survive, repeat blocked
+  by cooldown, same-tick ordinary hit protected but solid still lethal.
+- Integration: mission routes V to swap, pause freezes swap/bomb warning, held input
+  does not retrigger after resume, orb death clears active combat, R recovers range,
+  pickup changes module appearance/type in the same tick, one bomb impulse after
+  resume. Campaign life penalties/death animations remain later milestones.
+
+## Corrections and implementation decisions
+
+Tests found an eight-frame fallback where nine hidden ticks were required; corrected
+the boundary. Runtime typed-array mismatch in an initial fixture call was corrected
+and the complete suite rerun without script errors. Reviewed simultaneous pickup
+processing and fixed reverse removal order changing upgrade semantics: effects now
+apply in authored spawn order, removals afterward. Fallback chooses the nearest
+available port and resets its previous position before enabling a shield.
+
+Tick conversions use nearest integer (ARC .28s→17, PRISM .48s→29, EMBER .58s→35).
+ARC starts exactly at its declared port offset, then uses phase-adjusted sine
+`12*(sin(2π*t/.48+phase)-sin(phase))`; its mean follows from the phase offset.
+Homing keeps a valid target and only reacquires when invalid, with stable shape-ID
+ties; acquisition does not turn instantly. Reflection performs up to three contacts
+per tick, offsets 0.5px along the normal and consumes remaining travel distance.
+
+Bomb protection starts on activation (90 protected simulation ticks); impulse
+follows the six-tick ring. This resolves the otherwise unspecified warning-time
+protection and preserves same-tick bomb safety; terrain always wins. The GDD's
+per-section wording also requires max30 per boss: distribute the total30 over
+visible vulnerable sections in stable group-ID order, never damage closed groups.
+These are implementation clarifications, not numeric balance changes.
+
+Pickup slide currently scans for nearest free Y, preferring the direction toward
+playfield center. VL-005 will supply actual corridor profile integration. Development
+range R resets targets/combat, preserving earned loadout; it is not campaign respawn.
+Spawnable fixtures (1–7, T/H) are keyboard-only development controls; normal ship
+controls retain keyboard/controller bindings. No random waves introduced.
+
+Added: `scripts/entities/{aegis_controller,pickup_system}.gd`,
+`scripts/combat/{defense_system,support_system}.gd`,
+`scenes/game/aegis_range.tscn`, `tests/{test_aegis,capture_aegis}.gd` and UID files.
+Extended existing collision/projectile/damage pipeline, mission, state, range, HUD,
+menu/boot, locale, validator and documentation. No architecture replacement.
+
+**Manual playthrough not verified.** No human VL-004 range session, physical gamepad
+trial, audio/art quality acceptance, complete enemy/boss campaign, representative
+stress benchmark or Windows run is claimed. Source renders and local Linux title
+smoke pass. Matching-template release and packaged range interaction limitations
+from earlier reports remain. Stage collision geometry, full death/checkpoint rules,
+enemy beam/arm sources and final assets/audio remain VL-005 onward.

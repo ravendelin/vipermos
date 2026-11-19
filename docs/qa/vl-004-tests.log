@@ -1,0 +1,10 @@
+Godot Engine v4.7.1.stable.fedora.a13da4feb - https://godotengine.org
+
+VOID_LANTERN_BOOT_OK viewport=640x360 physics=60 page=title
+VOID_LANTERN_MISSION_OK phase=INTRO
+VOID_LANTERN_MISSION_OK phase=INTRO
+VOID_LANTERN_MISSION_OK phase=INTRO
+VOID_LANTERN_BOOT_OK viewport=640x360 physics=60 page=title
+VOID_LANTERN_MISSION_OK phase=INTRO
+VOID_LANTERN_BOOT_OK viewport=640x360 physics=60 page=title
+RESULT: 416 assertions, 0 failures

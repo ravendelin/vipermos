@@ -6,14 +6,14 @@ var groups: Dictionary = {}
 var damage_total: int = 0
 var kills: int = 0
 
-func register(group: int, hp: int) -> void:
-    groups[group] = {"hp": hp, "max_hp": hp}
+func register(group: int, hp: int, boss_id: int = -1, vulnerable: bool = true) -> void:
+    groups[group] = {"hp": hp, "max_hp": hp, "boss_id":boss_id, "vulnerable":vulnerable}
 
 func alive(group: int) -> bool:
     return groups.has(group) and groups[group].hp > 0
 
 func apply(group: int, amount: int) -> bool:
-    if not alive(group):
+    if not alive(group) or not groups[group].vulnerable:
         return false
     var actual := mini(groups[group].hp, amount)
     groups[group].hp -= actual

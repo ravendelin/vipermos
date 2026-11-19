@@ -57,3 +57,11 @@ Attempting `./dist/linux-smoke/VoidLantern.x86_64 res://scenes/game/weapon_range
 overrides. Despite exit 0 it did **not** launch the range; the log is retained.
 Source range renders via `godot --path . --script tests/capture_weapons.gd`.
 Full packaged range interaction is not claimed verified.
+
+
+## VL-004 smoke update
+
+Same editor/runtime version pair. `tools/build_linux_smoke.py` rebuilt the PCK with
+AEGIS, support/pickup/hostile systems and passed verified title boot. Matching
+4.7.1 templates are still absent; cross-patch smoke is not a release certification.
+Source graphical capture: `godot --path . --script tests/capture_aegis.gd`.

@@ -2,6 +2,7 @@ extends CanvasLayer
 var top: Label
 var bottom: Label
 var diagnostics: Label
+var module_status: Label
 var charge_bar: ProgressBar
 
 func _ready() -> void:
@@ -13,6 +14,8 @@ func _ready() -> void:
         bar.color = Color("08111e")
         add_child(bar)
     top = _label(Vector2(8, 3))
+    module_status = _label(Vector2(385,3))
+    module_status.add_theme_font_size_override("font_size",10)
     bottom = _label(Vector2(158, 339))
     var charge_label := _label(Vector2(8,339))
     charge_label.text = Locale.text("charge_label")
@@ -42,8 +45,9 @@ func _label(at: Vector2) -> Label:
     add_child(label)
     return label
 
-func refresh(tick: int, physics_us: int, charge: int = 0, bullets: int = 0) -> void:
+func refresh(tick: int, physics_us: int, charge: int = 0, bullets: int = 0, module_state: String = "ATTACHED_FRONT", hostile: int = 0) -> void:
     top.text = Locale.text("hud_top") % [GameState.score, GameState.stage_id, GameState.lives, GameState.rank]
     bottom.text = Locale.text("hud_bottom") % [GameState.weapon, GameState.rank, GameState.speed_index + 1, GameState.bombs]
     charge_bar.value = charge
-    diagnostics.text = "tick %d | bullets %d / 192 | seed 47021 | FPS %d | physics %d us\nterrain / AEGIS / boss: not implemented (VL-004–007)" % [tick, bullets, Engine.get_frames_per_second(), physics_us]
+    module_status.text = Locale.text("aegis_" + module_state.to_lower()) + (" +" if GameState.assist_shield else "")
+    diagnostics.text = "tick %d | bullets %d / 192 | seed 47021 | FPS %d | physics %d us\nhostile %d | bits %d | missiles %d | stage/boss pending" % [tick, bullets, Engine.get_frames_per_second(), physics_us, hostile, GameState.bits, GameState.missile_rank]

@@ -85,6 +85,7 @@ func run() -> void:
     await process_frame
     await preload("res://tests/test_movement.gd").new().run(self, check)
     await preload("res://tests/test_combat.gd").new().run(self, check)
+    await preload("res://tests/test_aegis.gd").new().run(self, check)
     change_scene_to_file("res://scenes/boot.tscn")
     await scene_changed
     current_scene.show_page("campaign")

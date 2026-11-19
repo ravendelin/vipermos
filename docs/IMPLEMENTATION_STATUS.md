@@ -1,6 +1,6 @@
 # Implementation status
 
-Updated 2026-11-18. This delivery implements VL-003 after VL-002. Future milestones
+Updated 2026-11-18. This delivery implements VL-004 after VL-003. Future milestones
 remain sequential; complete campaign, final art and audio are not yet delivered.
 
 | Milestone | Deliverable | Actual status |
@@ -8,7 +8,7 @@ remain sequential; complete campaign, final art and audio are not yet delivered.
 | VL-001 | init Godot, viewport, input, repo structure, headless test runner | Implemented; verification limits below |
 | VL-002 | player movement, fixed tick, camera/HUD/debug | Implemented; automated checks pass; human input trial pending |
 | VL-003 | Pulse/Charge, swept collisions, projectile lifetime/pool | Implemented; 291 automated assertions pass; human range playtest pending |
-| VL-004 | AEGIS FSM, ARC/PRISM/EMBER, bit/missile/bomb, pickups | Not started |
+| VL-004 | AEGIS FSM, ARC/PRISM/EMBER, bit/missile/bomb, pickups | Implemented; 416 automated assertions pass; human module trial pending |
 | VL-005 | terrain + DSL stage director + checkpoint/recovery | Not started |
 | VL-006 | E01–E11, E16, E12–E15 + pattern library | Not started |
 | VL-007 | B01 + S01 complete data, tutorial, death/continue/results | Not started |
@@ -68,4 +68,22 @@ is forbidden by its build configuration; full packaged range interaction is not
 verified. Matching-template release export/Windows and human input trial remain
 outstanding. See TEST_REPORT.md for exact commands and recorded limits.
 
-Next: VL-004 AEGIS FSM, ARC/PRISM/EMBER, bits/missiles/bomb and pickups.
+VL-003 baseline committed locally as `5cd5fd9`. User confirmed the weapon build
+works; this does not establish a full campaign or physical-controller playtest.
+
+## VL-004 verification boundary
+
+AEGIS front/rear, 12-tick swap, launch/free/return, bounded recall fallback, stowed
+ports and per-group contact cooldown are implemented. ARC/PRISM/EMBER all ranks,
+reflected remaining paths, limited homing, bits, missiles, bomb and pickup effects
+are connected to the fixed-tick mission. Hostile shots have a 512-slot pool and
+relative sweeps against terrain, module, bits and ship. The AEGIS range adds explicit
+pickup/emitter controls without pretending to be a scripted campaign stage.
+
+416 assertions pass. Three rank-3 module captures and detached capture rendered and
+inspected. Linux smoke title boot passes. Human playthrough of this milestone,
+physical controller, final pixel assets/audio and full release acceptance remain
+unverified. Actual stage terrain/checkpoints, enemy/beam producers and boss behavior
+remain later milestones; test fixtures cover their current collision contracts.
+
+Next: VL-005 terrain, data-driven stage director and checkpoint/recovery.

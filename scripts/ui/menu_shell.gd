@@ -89,4 +89,4 @@ func _input(event: InputEvent) -> void:
 
 func _start_movement() -> void:
     GameState.start_run()
-    get_tree().change_scene_to_file("res://scenes/game/weapon_range.tscn")
+    get_tree().change_scene_to_file("res://scenes/game/aegis_range.tscn")
